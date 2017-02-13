@@ -16,6 +16,7 @@ if (request.contentType != 'application/json') {
 	log "Invalid content-type ${request.contentType}"
 	response.status = 415
 	out.println "Accept: application/json"
+	return
 }
 
 String body = request.inputStream.text
