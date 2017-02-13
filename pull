@@ -1,19 +1,39 @@
+import groovy.json.*
+
+String method = request.method
+String body = request.inputStream.text
 
 void log(String message) {
 	String timestamp = new Date().format('yyyy-mm-dd hh:mm:ss')
-	new File('/var/log/groovlets.log').append("[$timestamp] $message")
+	new File('/var/log/groovlets.log').append("[$timestamp] $message\n")
 }
 
-if (request.method != 'POST') {
+if (method != 'POST') {
 	log("Invalid request method.")
 	response.status = 405
 	return
 }
 
-String body = request.reader.text
-def push = new JsonSlurper().parse(body)
+/*
+StringBuilder buffer = new StringBuilder()
+BufferedReader reader = new BufferedReader(new InputStreamReader(request.inputStream))
+String line = reader.readLine()
+while (line != null) {
+      buffer.append(line)
+      buffer.append('\n')
+      line = reader.readLine()
+}
+String body = buffer.toString() //request.inputStream.text
+*/s
+if (body.length() == 0) {
+   response.status = 400
+   return
+}
 
-if (push.ref != '/refs/heads/master) {
+log(body)
+def push = new JsonSlurper().parseText(body)
+
+if (push.ref != '/refs/heads/master') {
 	log("Didn't push to master.")
 	response.status = 200
 	return
@@ -22,8 +42,6 @@ if (push.ref != '/refs/heads/master) {
 String name = push.repository.name
 log("Push to repository $name")
 if (name == 'groovlets') {
-	File log = new File('/var/log/groovlets.log')
-	log.append body
 	"/var/lib/downloads/scripts/pull groovlets".execute().text
 }
 response.status = 200
