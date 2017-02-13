@@ -1,47 +1,35 @@
 import groovy.json.*
 
 String method = request.method
-String body = request.inputStream.text
 
 void log(String message) {
 	String timestamp = new Date().format('yyyy-mm-dd hh:mm:ss')
 	new File('/var/log/groovlets.log').append("[$timestamp] $message\n")
+	//println "[$timestamp] $message"
 }
 
 if (method != 'POST') {
 	log("Invalid request method.")
 	response.status = 405
+	response.text = "Invalid method: POST only."
 	return
 }
 
-/*
-StringBuilder buffer = new StringBuilder()
-BufferedReader reader = new BufferedReader(new InputStreamReader(request.inputStream))
-String line = reader.readLine()
-while (line != null) {
-      buffer.append(line)
-      buffer.append('\n')
-      line = reader.readLine()
-}
-String body = buffer.toString() //request.inputStream.text
-*/s
-if (body.length() == 0) {
-   response.status = 400
-   return
-}
-
-log(body)
+String body = request.inputStream.text
 def push = new JsonSlurper().parseText(body)
 
-if (push.ref != '/refs/heads/master') {
-	log("Didn't push to master.")
+if (push.ref != 'refs/heads/master') {
+	log("Pushed to ${push.ref}")
 	response.status = 200
 	return
 }
 
 String name = push.repository.name
-log("Push to repository $name")
-if (name == 'groovlets') {
-	"/var/lib/downloads/scripts/pull groovlets".execute().text
+if (name == 'groovlets' || name == 'scripts' || name == 'manager') {
+	log("Push to repository $name")
+	"/var/lib/downloads/scripts/pull $name".execute().text
+}
+else {
+	log("Pushed to unsupported repository $name")
 }
 response.status = 200
