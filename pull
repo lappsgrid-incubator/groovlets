@@ -13,6 +13,11 @@ if (method != 'POST') {
 	response.text = "Invalid method: POST only."
 	return
 }
+if (request.contentType != 'application/json') {
+	log "Invalid content-type ${request.contentType}"
+	response.status = 405
+	response.accept = 'application/json'
+}
 
 String body = request.inputStream.text
 def push = new JsonSlurper().parseText(body)
