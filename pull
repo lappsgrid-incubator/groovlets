@@ -10,7 +10,6 @@ void log(String message) {
 if (method != 'POST') {
 	log("Invalid request method.")
 	response.status = 405
-	response.text = "Invalid method: POST only."
 	return
 }
 if (request.contentType != 'application/json') {
