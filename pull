@@ -23,14 +23,15 @@ if (push.ref != 'refs/heads/master') {
 	return
 }
 
-header.each { k,v ->
-	log "$k = $v"
-}
-	
+Map repos = [ groovlet:'groovlets',
+	'jetstream-script':'scripts',
+	'service-manager-installation':'manager'
+]
 String name = push.repository.name
-if (name == 'groovlets' || name == 'scripts' || name == 'manager') {
+String repo = repos[name]
+if (repos) {
 	log("Push to repository $name")
-	"/var/lib/downloads/scripts/pull $name".execute().text
+	"/var/lib/downloads/scripts/pull $repo".execute().text
 }
 else {
 	log("Pushed to unsupported repository $name")
