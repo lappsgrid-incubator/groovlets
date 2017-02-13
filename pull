@@ -1,0 +1,29 @@
+
+void log(String message) {
+	String timestamp = new Date().format('yyyy-mm-dd hh:mm:ss')
+	new File('/var/log/groovlets.log').append("[$timestamp] $message")
+}
+
+if (request.method != 'POST') {
+	log("Invalid request method.")
+	response.status = 405
+	return
+}
+
+String body = request.reader.text
+def push = new JsonSlurper().parse(body)
+
+if (push.ref != '/refs/heads/master) {
+	log("Didn't push to master.")
+	response.status = 200
+	return
+}
+
+String name = push.repository.name
+log("Push to repository $name")
+if (name == 'groovlets') {
+	File log = new File('/var/log/groovlets.log')
+	log.append body
+	"/var/lib/downloads/scripts/pull groovlets".execute().text
+}
+response.status = 200
