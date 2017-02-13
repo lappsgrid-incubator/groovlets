@@ -31,7 +31,7 @@ String name = push.repository.name
 String repo = repos[name]
 if (repos) {
 	log("Push to repository $name")
-	"/var/lib/downloads/scripts/pull $repo".execute().text
+	log "/var/lib/downloads/scripts/pull $repo".execute().text
 }
 else {
 	log("Pushed to unsupported repository $name")
