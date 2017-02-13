@@ -1,0 +1,46 @@
+def method = request.method
+ 
+if (!session) {
+    session = request.getSession(true)
+}
+ 
+if (!session.groovlet) {
+    session.groovlet = 'Groovlets rock!'
+}
+ 
+html.html {
+    head {
+        title 'Groovlet info'
+    }
+    body {
+        h1 'General info'
+        ul {
+            li "Method: ${method}"
+            li "RequestURI: ${request.requestURI}"
+            li "session.groovlet: ${session.groovlet}"
+            li "application.version: ${context.version}"
+        }
+         
+        h1 'Headers'
+        ul {
+            headers.each {
+                li "${it.key} = ${it.value}"
+            }
+        }
+        h1 'Request'
+        ul {
+        	li "Path Info: ${request.pathInfo}"
+        	li "Query String: ${request.queryString}"
+        }
+        h1 'Parameters'
+        ul {
+        	request.parameterMap.each {
+        		li "${it.key} = ${it.value[0]}"
+        	}
+        }
+        h1 'Body'
+        pre {
+        	request.reader.text
+        }
+    }
+}
