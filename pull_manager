@@ -1,2 +1,0 @@
-println "/var/lib/downloads/scripts/pull manager".execute().text
-
