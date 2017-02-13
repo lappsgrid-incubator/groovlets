@@ -24,7 +24,7 @@ if (push.ref != 'refs/heads/master') {
 }
 
 Map repos = [ groovlet:'groovlets',
-	'jetstream-script':'scripts',
+	'jetstream-scripts':'scripts',
 	'service-manager-installation':'manager'
 ]
 String name = push.repository.name
