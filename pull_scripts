@@ -1,0 +1,2 @@
+println "/var/lib/downloads/scripts/pull scripts".execute().text
+

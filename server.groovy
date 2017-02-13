@@ -4,7 +4,7 @@ import groovy.servlet.*
  
 @Grab(group='org.mortbay.jetty', module='jetty-embedded', version='6.1.26')
 def startJetty() {
-    def jetty = new Server(80)
+    def jetty = new Server(8888)
      
     def context = new Context(jetty, '/', Context.SESSIONS)  // Allow sessions.
     context.resourceBase = '.'  // Look in current dir for Groovy scripts.
