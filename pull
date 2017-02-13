@@ -3,7 +3,7 @@ import groovy.json.*
 String method = request.method
 
 void log(String message) {
-	String timestamp = new Date().format('yyyy-mm-dd hh:mm:ss')
+	String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
 	new File('/var/log/groovlets.log').append("[$timestamp] $message\n")
 	//println "[$timestamp] $message"
 }
@@ -24,6 +24,10 @@ if (push.ref != 'refs/heads/master') {
 	return
 }
 
+header.each { k,v ->
+	log "$k = $v"
+}
+	
 String name = push.repository.name
 if (name == 'groovlets' || name == 'scripts' || name == 'manager') {
 	log("Push to repository $name")
