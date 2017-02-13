@@ -1,0 +1,2 @@
+println "pull_scripts".execute().text
+
