@@ -23,13 +23,13 @@ if (push.ref != 'refs/heads/master') {
 	return
 }
 
-Map repos = [ groovlet:'groovlets',
+Map repos = [ groovlets:'groovlets',
 	'jetstream-scripts':'scripts',
 	'service-manager-installation':'manager'
 ]
 String name = push.repository.name
 String repo = repos[name]
-if (repos) {
+if (repo) {
 	log("Push to repository $name")
 	log "/var/lib/downloads/scripts/pull $repo".execute().text
 }
