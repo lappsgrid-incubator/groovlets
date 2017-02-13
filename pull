@@ -19,6 +19,12 @@ if (request.contentType != 'application/json') {
 }
 
 String body = request.inputStream.text
+if (!body) {
+	log "Empty body"
+	response.status = 400
+	return
+}
+
 def push = new JsonSlurper().parseText(body)
 
 if (push.ref != 'refs/heads/master') {
