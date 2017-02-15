@@ -8,13 +8,13 @@ void log(String message) {
 }
 
 if (method != 'POST') {
-	log("Invalid request method.")
-	response.status = 405
+	log("Invalid request method: $method")
+	response.status = 405 // Method not allowed.
 	return
 }
 if (request.contentType != 'application/json') {
 	log "Invalid content-type ${request.contentType}"
-	response.status = 415
+	response.status = 415  // Unsupported type
 	out.println "Accept: application/json"
 	return
 }
@@ -22,27 +22,30 @@ if (request.contentType != 'application/json') {
 String body = request.inputStream.text
 if (!body) {
 	log "Empty body"
-	response.status = 400
+	response.status = 400 // Bad request
 	return
 }
 
 def push = new JsonSlurper().parseText(body)
 
 if (push.ref != 'refs/heads/master') {
-	log("Pushed to ${push.ref}")
+	log("Pushed to non-master branch ${push.ref}")
 	response.status = 200
 	return
 }
 
-Map repos = [ groovlets:'groovlets',
+// These are the repositories we are interested in.
+Map repos = [ 
+	groovlets:'groovlets',
 	'jetstream-scripts':'scripts',
 	'service-manager-installation':'manager'
 ]
+
 String name = push.repository.name
 String repo = repos[name]
 if (repo) {
 	StringBuilder buffer = new StringBuilder()
-	buffer << "Push to repository $name"
+	buffer << "Push to repository ${name}\n"
 	buffer << "/var/lib/downloads/scripts/pull.sh $repo".execute().text
 	log buffer.toString()
 }
