@@ -39,7 +39,7 @@ if (!expected) {
 }
 String signature = sign(body)
 if ("sha1=$signature" != expected) {
-	out.println "Signatures don't match: $signature"
+	out.println "Signatures don't match: $signature\n${System.env['GITHUB_SECRET']}"
 	response.status = 403
 	return
 }
@@ -48,8 +48,12 @@ response.status = 200
 return
 
 String sign(String msg) {
+	String secret = System.env['GITHUB_SECRET']
+	if (!secret) {
+		return "Secret unavailable"
+	}
 	try {
-		SecretKeySpec spec = new SecretKeySpec('secret'.bytes, 'HmacSHA1')
+		SecretKeySpec spec = new SecretKeySpec(secret.bytes, 'HmacSHA1')
 		Mac mac = Mac.getInstance('HmacSHA1')
 		mac.init(spec)
 		byte[] digest = mac.doFinal(msg.bytes)
@@ -57,6 +61,6 @@ String sign(String msg) {
 		return digest.encodeHex()
 	} 
 	catch (InvalidKeyException e) {
-		return null
+		return "Invalid Key: ${e.message}"
 	}
 }
