@@ -1,0 +1,32 @@
+def method = request.method
+
+if (method != 'POST') {
+	response.status = 405 // Method not allowed.
+	return
+}
+if (request.contentType != 'application/json') {
+	response.status = 415  // Unsupported type
+	out.println "Accept: application/json"
+	return
+}
+
+String body = request.inputStream.text
+if (!body) {
+	response.status = 400 // Bad request
+	return
+}
+
+StringWriter writer = new StringWriter()
+writer.println new Date()
+writer.println "Headers"
+headers.each { key,value ->
+	writer.println "$key = $value"
+}
+writer.println()
+writer.println "BODY"
+writer.println body
+writer.println()
+
+new File("/tmp/request-info.txt").append(writer.toString())
+response.status = 200
+return
