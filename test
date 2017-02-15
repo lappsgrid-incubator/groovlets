@@ -32,7 +32,7 @@ writer.println body
 writer.println()
 
 new File("/tmp/request-info.txt").append(writer.toString())
-String expected = header['X-Hub-Signature']
+String expected = headers['X-Hub-Signature']
 if (!expected) {
 	reponse.status = 400
 	return
@@ -53,7 +53,8 @@ String sign(String msg) {
 		Mac mac = Mac.getInstance('HmacSHA1')
 		mac.init(spec)
 		byte[] digest = mac.doFinal(msg.bytes)
-		return asHex(digest)
+		//return asHex(digest)
+		return digest.encodeHex()
 	} 
 	catch (InvalidKeyException e) {
 		return null
