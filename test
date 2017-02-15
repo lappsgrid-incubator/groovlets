@@ -37,7 +37,9 @@ if (!expected) {
 	reponse.status = 400
 	return
 }
-if ("sha1=${sign(payload)}" != expected) {
+String signature = sign(body)
+if ("sha1=$signature" != expected) {
+	out.println "Signatures don't match: $signature"
 	response.status = 403
 	return
 }
@@ -47,7 +49,7 @@ return
 
 String sign(String msg) {
 	try {
-		SecretKeySpec spec = new SecretKeySpec('secret'.bytes, TYPE)
+		SecretKeySpec spec = new SecretKeySpec('secret'.bytes, 'HmacSHA1')
 		Mac mac = Mac.getInstance('HmacSHA1')
 		mac.init(spec)
 		byte[] digest = mac.doFinal(msg.bytes)
