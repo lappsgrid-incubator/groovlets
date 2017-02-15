@@ -1,3 +1,7 @@
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import java.security.InvalidKeyException
+
 def method = request.method
 
 if (method != 'POST') {
@@ -28,5 +32,28 @@ writer.println body
 writer.println()
 
 new File("/tmp/request-info.txt").append(writer.toString())
+String expected = header['X-Hub-Signature']
+if (!expected) {
+	reponse.status = 400
+	return
+}
+if ("sha1=${sign(payload)}" != expected) {
+	response.status = 403
+	return
+}
+out.println "Payload accepted."
 response.status = 200
 return
+
+String sign(String msg) {
+	try {
+		SecretKeySpec spec = new SecretKeySpec('secret'.bytes, TYPE)
+		Mac mac = Mac.getInstance('HmacSHA1')
+		mac.init(spec)
+		byte[] digest = mac.doFinal(msg.bytes)
+		return asHex(digest)
+	} 
+	catch (InvalidKeyException e) {
+		return null
+	}
+}
