@@ -85,11 +85,13 @@ if (repo) {
 	StringBuilder buffer = new StringBuilder()
 	buffer << "Push to repository ${name}\n"
 	buffer << "/var/lib/downloads/scripts/pull.sh $repo".execute().text
-	log buffer.toString()
+	out.println buffer.toString()
+	response.status = 200
 }
 else {
 	log("Pushed to unsupported repository $name")
+	out.println "$name is not a supported respoitory."
+	response.status = 400
 }
-response.status = 200
 return
 
