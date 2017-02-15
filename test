@@ -20,6 +20,7 @@ if (!body) {
 	return
 }
 
+/*
 StringWriter writer = new StringWriter()
 writer.println new Date()
 writer.println "Headers"
@@ -32,14 +33,16 @@ writer.println body
 writer.println()
 
 new File("/tmp/request-info.txt").append(writer.toString())
+*/
+
 String expected = headers['X-Hub-Signature']
 if (!expected) {
-	reponse.status = 400
+	response.status = 400
 	return
 }
 String signature = sign(body)
 if ("sha1=$signature" != expected) {
-	out.println "Signatures don't match: $signature\n${System.env['GITHUB_SECRET']}"
+	out.println "Signatures don't match: $signature."
 	response.status = 403
 	return
 }
