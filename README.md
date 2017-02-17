@@ -12,9 +12,17 @@ The password service uses a cryptographically secure random number generator to 
 
 ### Parameters
 
-- **type** one of **default**, **safe**, or **hex**
+- **type** one of *default*, *safe*, or *hex*
 - **chars** the set of characters used to generate the password
 - **length** the number of characters to produce.
+
+#### Types
+
+- **default** the set of most printable ASCII characters (minus quotes).
+- **safe** letters (upper and lower case), digits, and the characters _-=,.<br/>
+The *safe* type is intended to be used to generate passwords or keys that can be safely included in scripts.
+- **hex** the hexadecimal digits 0123456789abcde
+
 
 The password service will always produce at least 16 characters of output.
 
