@@ -5,9 +5,14 @@ import java.security.MessageDigest
 
 import groovy.json.*
 
+LOG_PATH = System.getenv('LOG_PATH')
+if (LOG_PATH == null) {
+	LOG_PATH = '/tmp/groovlets.log'
+}
+
 void log(String message) {
 	String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
-	new File('/var/log/groovlets.log').append("[$timestamp] $message\n")
+	new File(LOG_PATH).append("[$timestamp] PULL ${request.remoteHost} $message\n")
 }
 
 String sign(String msg) {

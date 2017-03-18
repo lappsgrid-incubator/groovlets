@@ -4,7 +4,10 @@
 import groovy.sql.Sql
 import groovy.json.*
 
-LOG_PATH = '/tmp/groovlets.log'
+LOG_PATH = System.getenv('LOG_PATH')
+if (LOG_PATH == null) {
+    LOG_PATH = '/tmp/groovlets.log'
+}
 
 DB_URL = System.getenv('DB_URL')
 if (DB_URL == null) {
@@ -14,6 +17,11 @@ if (DB_URL == null) {
 Class.forName("org.h2.Driver")
 Sql sql = Sql.newInstance(DB_URL, "pid", "pid", "org.h2.Driver")
 
+void log(String message) {
+    String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
+    new File(LOG_PATH).append("[$timestamp] DB ${request.remoteHost} $message\n")
+}
+
 void respond(int code, String message) {
     response.status = code
     out.println message
@@ -22,16 +30,19 @@ void respond(int code, String message) {
 if (!headers.Authorization) {
     response.status = 403
     out.println "No Authorization header."
+    log('Unathorized access attempt.')
     return
 }
 if (headers.Authorization != "token ${System.getenv('PID_TOKEN')}") {
     response.status = 403
     out.println "Invalid authorization token."
+    log('Unathorized access attempt from.')
     return
 }
 
 if (request.method == 'DELETE') {
     sql.execute 'drop table pid if exists;'
+    log('Dropped the table.')
     respond(200, 'Table dropped.')
 }
 else if (request.method == 'POST') {
@@ -41,9 +52,11 @@ create table pid (
   pid VARCHAR NOT NULL,
 );
 """
+    log("Created the table.")
     respond(201, "Apparently we created a table....")
 }
 else if (request.method == 'GET') {
+    log("Returning table contents to " + request.remoteHost)
     response.contentType='application/json'
     json {
         sql.eachRow('select * from pid;') { row ->
@@ -53,5 +66,6 @@ else if (request.method == 'GET') {
     }
 }
 else {
+    log("Invalid request.")
     respond(405, "No if statement matched.")
 }
