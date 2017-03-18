@@ -1,0 +1,72 @@
+@GrabConfig(systemClassLoader=true)
+@Grab('com.h2database:h2:1.4.194')
+
+import groovy.sql.Sql
+import groovy.json.*
+
+LOG_PATH = '/tmp/groovlets.log'
+DB_URL = "jdbc:h2:file://tmp/pid"
+
+Class.forName("org.h2.Driver")
+Sql sql = Sql.newInstance(DB_URL, "pid", "pid", "org.h2.Driver")
+
+void respond(int code, String message) {
+    response.status = code
+    out.println message
+}
+
+if (!headers.Authorization) {
+    response.status = 403
+    out.println "No Authorization header."
+    return
+}
+if (headers.Authorization != "token ${System.getenv('PID_TOKEN')}") {
+    response.status = 403
+    out.println "Invalid authorization token."
+    return
+}
+
+if (request.method == 'DELETE') {
+    sql.execute 'drop table pid if exists;'
+    respond(200, 'Table dropped.')
+}
+else if (request.method == 'POST') {
+    sql.execute """
+create table pid (
+  url VARCHAR NOT NULL PRIMARY KEY ,
+  pid VARCHAR NOT NULL,
+);
+"""
+    respond(201, "Apparently we created a table....")
+}
+else if (request.method == 'GET') {
+    response.contentType='application/json'
+    json {
+        sql.eachRow('select * from pid;') { row ->
+            url(row.url)
+            pid(row.pid)
+        }
+    }
+}
+else {
+    //response.status = 405
+    respond(405, "No if statement matched.")
+}
+
+//switch (request.method) {
+//    case 'GET' :
+//        respond(200, "Got a thing.")
+////        println 'GET'
+////        response.status = 200
+////        out.println "GET"
+//        break
+//    case 'POST':
+////        response.status = 201
+////        println "POST"
+////        out.println "POST"
+//        respond(201, "Posted a thing.")
+//        break
+//    default:
+//        response.status = 405
+//        break
+//}

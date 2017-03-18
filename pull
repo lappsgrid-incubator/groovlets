@@ -5,8 +5,6 @@ import java.security.MessageDigest
 
 import groovy.json.*
 
-String method = request.method
-
 void log(String message) {
 	String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
 	new File('/var/log/groovlets.log').append("[$timestamp] $message\n")
@@ -29,6 +27,8 @@ String sign(String msg) {
 		return "Invalid Key: ${e.message}"
 	}
 }
+
+String method = request.method
 
 if (method != 'POST') {
 	log("Invalid request method: $method")

@@ -1,0 +1,98 @@
+
+@GrabConfig(systemClassLoader=true)
+@Grab('com.h2database:h2:1.4.194')
+
+import groovy.json.*
+import groovy.sql.Sql
+
+import static javax.servlet.http.HttpServletResponse.*
+
+LOG_PATH = '/tmp/groovlets.log'
+DB_URL = "jdbc:h2:file://tmp/pid"
+
+CHARSET='charset=utf-8'
+TEXT='text/plain'
+JSON='application/json'
+
+// Not an efficient way of performing logging, but this should be called exactly once
+// per method invocation.
+void log(String message) {
+    String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
+    new File(LOG_PATH).append("[$timestamp] $message\n")
+}
+
+String method = request.method
+
+Sql sql = Sql.newInstance(DB_URL, "pid", "pid", "org.h2.Driver")
+
+if (method == 'POST') {
+//    if (headers.Authorization == null) {
+//        response.status = 403
+//        out.println "No authorization header"
+//        return
+//    }
+//    if (headers.Authorization != "token ${System.getenv('PID_TOKEN')}") {
+//        response.status = 403
+//        out.println "Invalid authorization token"
+//        return
+//    }
+
+    println "POST"
+
+    String url
+    String text = request.inputStream.text
+    if (text) {
+        if (request.contentType != JSON) {
+            response.status = SC_UNSUPPORTED_MEDIA_TYPE
+            return
+        }
+        println "Parsing body"
+        Map body = new JsonSlurper().parseText(text)
+        if (body.url) {
+            println "body.url = ${body.url}"
+            url = body.url
+        }
+    }
+    if (!url) {
+        url = params.url
+    }
+    if (!url) {
+        response.status = 400
+        out.println "No url specified."
+    }
+    def row = sql.firstRow("select pid from pid where url=${url}")
+    if (row) {
+        response.status = SC_CONFLICT
+        response.contentType = "$TEXT;$CHARSET"
+        out.println "ALREADY REGISTERED"
+        out.println 'http://pid.lappsgrid.org/' + row.pid
+        return
+    }
+    String pid = UUID.randomUUID()
+    sql.executeInsert('insert into pid (url,pid) VALUES (:url,:pid);', [url:url, pid:pid])
+    response.status = SC_CREATED
+    response.contentType = "$TEXT;$CHARSET"
+    out.println pid
+    return
+}
+else if (method == 'GET') {
+    String url = params.url
+    if (!url) {
+        response.status = SC_BAD_REQUEST
+        response.contentType = "$TEXT;$CHARSET"
+        out.println "URL MISSING"
+        return
+    }
+//    String pid = database[url]
+//    String pid
+    def row = sql.firstRow('select * from pid where url=:url', [url:url])
+//    println row
+    if (row) {
+        response.status = SC_OK
+        response.contentType = "$TEXT;$CHARSET"
+        out.println 'http://pid.lappsgrid.org/' + row.pid
+        return
+    }
+    response.status = SC_NOT_FOUND
+}
+
