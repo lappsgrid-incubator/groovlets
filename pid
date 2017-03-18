@@ -7,8 +7,16 @@ import groovy.sql.Sql
 
 import static javax.servlet.http.HttpServletResponse.*
 
-LOG_PATH = '/tmp/groovlets.log'
-DB_URL = "jdbc:h2:file://tmp/pid"
+LOG_PATH = System.getenv('LOG_PATH')
+if (LOG_PATH == null) {
+    LOG_PATH = '/tmp/groovlets.log'
+}
+
+DB_URL = System.getenv('DB_URL')
+if (DB_URL == null) {
+    DB_URL = "jdbc:h2:file://tmp/pid"
+}
+
 
 CHARSET='charset=utf-8'
 TEXT='text/plain'

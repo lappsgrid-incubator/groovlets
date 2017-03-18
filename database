@@ -5,7 +5,11 @@ import groovy.sql.Sql
 import groovy.json.*
 
 LOG_PATH = '/tmp/groovlets.log'
-DB_URL = "jdbc:h2:file://tmp/pid"
+
+DB_URL = System.getenv('DB_URL')
+if (DB_URL == null) {
+    DB_URL = "jdbc:h2:file://tmp/pid"
+}
 
 Class.forName("org.h2.Driver")
 Sql sql = Sql.newInstance(DB_URL, "pid", "pid", "org.h2.Driver")
@@ -49,24 +53,5 @@ else if (request.method == 'GET') {
     }
 }
 else {
-    //response.status = 405
     respond(405, "No if statement matched.")
 }
-
-//switch (request.method) {
-//    case 'GET' :
-//        respond(200, "Got a thing.")
-////        println 'GET'
-////        response.status = 200
-////        out.println "GET"
-//        break
-//    case 'POST':
-////        response.status = 201
-////        println "POST"
-////        out.println "POST"
-//        respond(201, "Posted a thing.")
-//        break
-//    default:
-//        response.status = 405
-//        break
-//}
