@@ -50,6 +50,7 @@ if (method == 'POST') {
     if (text) {
         if (request.contentType != JSON) {
             response.status = SC_UNSUPPORTED_MEDIA_TYPE
+            log('Unsupported media type.')
             return
         }
         Map body = new JsonSlurper().parseText(text)
@@ -63,6 +64,8 @@ if (method == 'POST') {
     if (!url) {
         response.status = 400
         out.println "No url specified."
+        log('No URL')
+        return
     }
     def row = sql.firstRow("select pid from pid where url=${url}")
     if (row) {
@@ -70,6 +73,7 @@ if (method == 'POST') {
         response.contentType = "$TEXT;$CHARSET"
         out.println "ALREADY REGISTERED"
         out.println 'http://pid.lappsgrid.org/' + row.pid
+        log("Already registered $url")
         return
     }
     String pid = UUID.randomUUID()
@@ -77,6 +81,7 @@ if (method == 'POST') {
     response.status = SC_CREATED
     response.contentType = "$TEXT;$CHARSET"
     out.println pid
+    log("Created $pid for $url")
     return
 }
 else if (method == 'GET') {
