@@ -12,13 +12,7 @@ import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceManage
 import javax.servlet.http.HttpServletResponse
 
 String method = request.method
-String vassar = 'http://vassar.lappsgrid.org'
-String brandeis = 'http://eldrad.cs-i.brandeis.edu:8080/service_manager'
-String url = vassar
-
-if (params.server == 'brandeis') {
-    url = brandeis
-}
+String url = 'http://vassar.lappsgrid.org'
 
 String username = System.getenv('SERVICE_MANAGER_USERNAME')
 String password = System.getenv('SERVICE_MANAGER_PASSWORD')
