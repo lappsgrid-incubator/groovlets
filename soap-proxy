@@ -28,6 +28,16 @@ if (request.contentType != 'application/json') {
 
 def parser = new JsonSlurper()
 Map input = (Map) parser.parse(request.inputStream)
+if (input.url == null) {
+    response.status = HttpServletResponse.SC_BAD_REQUEST
+    out.println "No service URL provided."
+    return
+}
+if (input.data == null) {
+    response.status = HttpServletResponse.SC_BAD_REQUEST
+    out.println "No data proviced."
+    return
+}
 
 String username = input.username ?: 'tester'
 String password = input.password ?: 'tester'
