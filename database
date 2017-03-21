@@ -27,15 +27,24 @@ void respond(int code, String message) {
     out.println message
 }
 
+if (request.method == 'OPTIONS') {
+    response.status = 200
+    response.addHeader('Allow', 'DELETE, GET, POST')
+    response.addHeader('WWW-Authenticate', 'token')
+    return
+}
+
 if (!headers.Authorization) {
-    response.status = 403
+    response.status = 401
+    response.addHeader('WWW-Authenticate', 'token')
     out.println "No Authorization header."
     log('Unathorized access attempt.')
     return
 }
 if (headers.Authorization != "token ${System.getenv('PID_TOKEN')}") {
-    response.status = 403
-    out.println "Invalid authorization token."
+    response.status = 401
+    response.addHeader('WWW-Authenticate', 'token')
+    out.println "Invalid token."
     log('Unathorized access attempt from.')
     return
 }
@@ -57,15 +66,16 @@ create table pid (
 }
 else if (request.method == 'GET') {
     log("Returning table contents to " + request.remoteHost)
-    response.contentType='application/json'
-    json {
-        sql.eachRow('select * from pid;') { row ->
-            url(row.url)
-            pid(row.pid)
-        }
+    List rows = []
+    sql.eachRow('select * from pid;') { row ->
+        rows << [url:row.url, pid:row.pid]
     }
+    response.status = 200
+    response.contentType='application/json'
+    out.println new groovy.json.JsonBuilder(rows).toPrettyString()
 }
 else {
     log("Invalid request.")
     respond(405, "No if statement matched.")
 }
+
