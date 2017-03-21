@@ -1,0 +1,41 @@
+@GrabConfig(systemClassLoader=true)
+@Grab('org.lappsgrid:client:2.0.4')
+import org.lappsgrid.client.*
+
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+
+import javax.servlet.http.HttpServletResponse
+
+if (request.method == 'OPTIONS') {
+    response.status = 200
+    response.addHeader('Allow', 'POST')
+    response.addHeader('Accept', 'application/json')
+    return
+}
+
+if (request.method != 'POST') {
+    response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
+    response.addHeader('Allow', 'POST')
+    return
+}
+
+if (request.contentType != 'application/json') {
+    response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
+    response.addHeader('Accept', 'application/json')
+    return
+}
+
+def parser = new JsonSlurper()
+Map input = (Map) parser.parse(request.inputStream)
+
+String username = input.username ?: 'tester'
+String password = input.password ?: 'tester'
+
+ServiceClient client = new ServiceClient(input.url, username, password)
+String json = client.execute(new JsonBuilder(input.data).toString())
+response.status = 200
+response.contentType = 'application/json'
+
+println groovy.json.JsonOutput.prettyPrint(json)
+
