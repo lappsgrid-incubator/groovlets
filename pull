@@ -38,13 +38,15 @@ String method = request.method
 if (method != 'POST') {
 	log("Invalid request method: $method")
 	response.status = 405 // Method not allowed.
+	response.addHeader('Allow', 'POST')
 	return
 }
 
 if (request.contentType != 'application/json') {
 	log "Invalid content-type ${request.contentType}"
 	response.status = 415  // Unsupported type
-	out.println "Accept: application/json"
+	response.addHeader('Accept', 'application/json')
+	//out.println "Accept: application/json"
 	return
 }
 
