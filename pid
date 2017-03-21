@@ -5,6 +5,8 @@
 import groovy.json.*
 import groovy.sql.Sql
 
+import javax.servlet.http.HttpServletResponse
+
 import static javax.servlet.http.HttpServletResponse.*
 
 LOG_PATH = System.getenv('LOG_PATH')
@@ -32,14 +34,47 @@ void log(String message) {
 String method = request.method
 if (request.method == 'OPTIONS') {
     response.status = 200
-    response.addHeader('Allow', 'POST, GET')
+    response.addHeader('Allow', 'GET')
     response.addHeader('Accept', 'application/json')
     return
 }
-
+if (method != 'GET') {
+    response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
+    response.addHeader('Allow', 'OPTIONS, GET')
+    return
+}
 
 Sql sql = Sql.newInstance(DB_URL, "pid", "pid", "org.h2.Driver")
+String query
+if (params.url) {
+    query = "select * from pid where url = ${params.url}"
+}
+else if (params.pid) {
+    query = "select * from pid where pid = ${params.pid}"
+}
+else {
+    response.status = HttpServletResponse.SC_BAD_REQUEST
+    out.println "URL or PID not specified."
+    return
+}
 
+def row = sql.firstRow(query)
+if (row) {
+    response.status = SC_OK
+    response.contentType = TEXT
+    out.println row.pid
+    return
+}
+
+String pid = UUID.randomUUID()
+sql.executeInsert('insert into pid (url,pid) VALUES (:url,:pid);', [url:url, pid:pid])
+response.status = SC_CREATED
+response.contentType = TEXT
+out.println pid
+log("Created $pid for $url")
+
+
+/***
 if (method == 'POST') {
 //    if (headers.Authorization == null) {
 //        response.status = 403
@@ -91,21 +126,7 @@ if (method == 'POST') {
     log("Created $pid for $url")
     return
 }
-else if (method == 'GET') {
-    String url = params.url
-    if (!url) {
-        response.status = SC_BAD_REQUEST
-        response.contentType = "$TEXT;$CHARSET"
-        out.println "URL MISSING"
-        return
-    }
-    def row = sql.firstRow('select * from pid where url=:url', [url:url])
-    if (row) {
-        response.status = SC_OK
-        response.contentType = "$TEXT;$CHARSET"
-        out.println 'http://pid.lappsgrid.org/' + row.pid
-        return
-    }
-    response.status = SC_NOT_FOUND
-}
+else
+*/
+
 
