@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse
 String method = request.method
 String url = 'http://eldrad.cs-i.brandeis.edu:8080/service_manager'
 
-//String username = System.getenv('SERVICE_MANAGER_USERNAME')
-//String password = System.getenv('SERVICE_MANAGER_PASSWORD')
-String username = 'tester'
-String password = 'tester'
+String username = System.getenv('BRANDEIS_USERNAME')
+String password = System.getenv('BRANDEIS_PASSWORD')
+//String username = 'tester'
+//String password = 'tester'
 
 if (!username || !password) {
     response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
@@ -61,5 +61,5 @@ while (more.elements.length > 0) {
 result.totalCount = count
 response.status = 200
 response.contentType = 'application/json'
-out.println new groovy.json.JsonBuilder(result).toPrettyString()
+out.println new groovy.json.JsonBuilder(result.payload).toPrettyString()
 
