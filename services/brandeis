@@ -61,5 +61,5 @@ while (more.elements.length > 0) {
 result.totalCount = count
 response.status = 200
 response.contentType = 'application/json'
-out.println new groovy.json.JsonBuilder(result.payload).toPrettyString()
+out.println new groovy.json.JsonBuilder(result).toPrettyString()
 
