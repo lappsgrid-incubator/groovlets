@@ -47,5 +47,5 @@ String json = client.execute(new JsonBuilder(input.data).toString())
 response.status = 200
 response.contentType = 'application/json'
 
-println groovy.json.JsonOutput.prettyPrint(json)
+out.println groovy.json.JsonOutput.prettyPrint(json)
 
