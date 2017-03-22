@@ -2,7 +2,6 @@
 @Grab('com.h2database:h2:1.4.194')
 
 import groovy.sql.Sql
-import groovy.json.*
 
 LOG_PATH = System.getenv('LOG_PATH')
 if (LOG_PATH == null) {
@@ -27,6 +26,7 @@ void respond(int code, String message) {
     out.println message
 }
 
+// Always respond to OPTION requests.
 if (request.method == 'OPTIONS') {
     response.status = 200
     response.addHeader('Allow', 'DELETE, GET, POST')
@@ -34,6 +34,7 @@ if (request.method == 'OPTIONS') {
     return
 }
 
+// Check authorization headers
 if (!headers.Authorization) {
     response.status = 401
     response.addHeader('WWW-Authenticate', 'token')
@@ -49,12 +50,18 @@ if (headers.Authorization != "token ${System.getenv('PID_TOKEN')}") {
     return
 }
 
+// From this point on we assume the user is authorized.
+
+// DELETE : drop the table.
 if (request.method == 'DELETE') {
     sql.execute 'drop table pid if exists;'
     log('Dropped the table.')
     respond(200, 'Table dropped.')
+    return
 }
-else if (request.method == 'POST') {
+
+// POST : create the table
+if (request.method == 'POST') {
     sql.execute """
 create table pid (
   url VARCHAR NOT NULL PRIMARY KEY ,
@@ -63,8 +70,11 @@ create table pid (
 """
     log("Created the table.")
     respond(201, "Apparently we created a table....")
+    return
 }
-else if (request.method == 'GET') {
+
+// GET : list the table contents.
+if (request.method == 'GET') {
     log("Returning table contents to " + request.remoteHost)
     List rows = []
     sql.eachRow('select * from pid;') { row ->
@@ -73,9 +83,9 @@ else if (request.method == 'GET') {
     response.status = 200
     response.contentType='application/json'
     out.println new groovy.json.JsonBuilder(rows).toPrettyString()
-}
-else {
-    log("Invalid request.")
-    respond(405, "No if statement matched.")
+    return
 }
 
+log("Invalid request.")
+respond(405, "No if statement matched.")
+return
