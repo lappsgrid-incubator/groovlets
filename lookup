@@ -48,12 +48,13 @@ if (params.url) {
     def row = sql.firstRow("select * from pid where url = ${params.url}")
     if (row) {
         pid = row.pid
+        response.status = 200
     }
     else {
         pid = UUID.randomUUID()
         sql.executeInsert('insert into pid (url,pid) VALUES (:url,:pid);', [url:params.url, pid:pid])
+        response.status = 201
     }
-    response.status = 200
     out.print pid
     return
 }
