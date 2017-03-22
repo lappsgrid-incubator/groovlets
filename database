@@ -34,6 +34,46 @@ if (request.method == 'OPTIONS') {
     return
 }
 
+// GET : list the table contents.
+if (request.method == 'GET') {
+    log("Returning table contents to " + request.remoteHost)
+//    if (headers.Accept == 'text/html') {
+//        html {
+//            h1 "Greetings"
+//            p "Well, isn't that special."
+//        }
+//        return
+//    }
+//    List rows = []
+//    sql.eachRow('select * from pid;') { row ->
+//        rows << [url:row.url, pid:row.pid]
+//    }
+//    response.status = 200
+//    response.contentType='application/json'
+//    out.println new groovy.json.JsonBuilder(rows).toPrettyString()
+    html.html {
+        head {
+            title 'PID Repository'
+        }
+        body {
+            h1 "Results"
+            table {
+                tr {
+                    th 'URL'
+                    th 'PID'
+                }
+                sql.eachRow('select * from pid') { row ->
+                    tr {
+                        td row.url
+                        td row.pid
+                    }
+                }
+            }
+        }
+    }
+    return
+}
+
 // Check authorization headers
 if (!headers.Authorization) {
     response.status = 401
@@ -73,18 +113,6 @@ create table pid (
     return
 }
 
-// GET : list the table contents.
-if (request.method == 'GET') {
-    log("Returning table contents to " + request.remoteHost)
-    List rows = []
-    sql.eachRow('select * from pid;') { row ->
-        rows << [url:row.url, pid:row.pid]
-    }
-    response.status = 200
-    response.contentType='application/json'
-    out.println new groovy.json.JsonBuilder(rows).toPrettyString()
-    return
-}
 
 log("Invalid request.")
 respond(405, "No if statement matched.")
