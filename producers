@@ -16,8 +16,8 @@ if (DB_URL == null) {
     DB_URL = "jdbc:h2:/usr/share/producers"
 }
 Class.forName("org.h2.Driver")
-//Sql sql = Sql.newInstance(DB_URL, "admin", "admin", "org.h2.Driver")
-Sql sql = Sql.newInstance("jdbc:h2:/tmp/producers", "admin", "admin", "org.h2.Driver")
+Sql sql = Sql.newInstance(DB_URL, "admin", "admin", "org.h2.Driver")
+//Sql sql = Sql.newInstance("jdbc:h2:/tmp/producers", "admin", "admin", "org.h2.Driver")
 
 void log(String message) {
     String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
