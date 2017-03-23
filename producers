@@ -17,7 +17,6 @@ if (DB_URL == null) {
 }
 Class.forName("org.h2.Driver")
 Sql sql = Sql.newInstance(DB_URL, "admin", "admin", "org.h2.Driver")
-//Sql sql = Sql.newInstance("jdbc:h2:/tmp/producers", "admin", "admin", "org.h2.Driver")
 
 void log(String message) {
     String timestamp = new Date().format('yyyy-MM-dd hh:mm:ss')
@@ -51,14 +50,11 @@ if (!annotation) {
 String query = "select s.url, v.service_id from server s, service v, produces p where p.annotation = '$annotation' AND p.fk_service_id = v.id AND v.fk_server_id = s.id"
 
 def rows = sql.rows(query)
-response.addHeader('lapps-query', query)
-response.addHeader('lapps-query-size', rows.size().toString())
+response.addHeader('Lapps-Result-Set-Size', rows.size().toString())
 
 if (headers.Accept?.contains('text/html')) {
     response.status = 200
     response.contentType = 'text/html'
-//    StringWriter writer = new StringWriter()
-//    MarkupBuilder html = new MarkupBuilder(writer)
     html.html {
         head {
             title "$annotation Producers"
@@ -75,15 +71,6 @@ if (headers.Accept?.contains('text/html')) {
             }
         }
     }
-//    out.println """
-//<html>
-//<head><title>WTF</title></head>
-//<body>
-//<h1>WTF</h1>
-//<p>WTF is going on.</p>
-//</body>
-//</html>
-//"""
 }
 else if (headers.Accept?.contains('application/json')) {
     List list = []
@@ -114,7 +101,8 @@ else if (headers.Accept.contains('application/xml')) {
     out.print writer.toString()
 }
 else {
-    response.status = HttpServletResponse.SC_
+    response.status = HttpServletResponse.SC_NOT_ACCEPTABLE
     response.addHeader('Accept', 'text/html, text/xml, text/plain, application/json')
+    out.printnln "Please set the Accept: header"
 }
 return
