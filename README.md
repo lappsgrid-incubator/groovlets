@@ -17,7 +17,7 @@ The services available at *http://api.lappsgrid.org* are typically proof-of-conc
 
 ## http://api.lappsgrid.org/pull
 
-The **webhook** that GitHub will POST messages to when code is pushed to the master branch.  After doing some error and sanity checking the service calls the bash script /var/lib/downloads/scripts/pull.sh which does a `git pull origin master` in the appropriate target directory. 
+The **webhook** that GitHub will POST messages to when code is pushed to the master branch of a repository.  After doing some error and sanity checking the service calls the bash script /var/lib/downloads/scripts/pull.sh which does a `git pull origin master` in the appropriate target directory. 
 
 <table>
     <tr>
@@ -59,10 +59,6 @@ The password service uses a cryptographically secure random number generator to 
         <td>/password?type=:type&length=:length&chars=:string</td>
      </tr>
      <tr>
-        <td><b>Accepts</b></td>
-        <td>application/json</td>
-     </tr>
-     <tr>
         <td><b>Returns</b></td>
         <td>
             text/plain
@@ -76,7 +72,7 @@ The password service uses a cryptographically secure random number generator to 
 - **chars** the set of characters used to generate the password
 - **length** the number of characters to produce.
 
-If *chars* is specified then *type* is ignored.
+If *chars* is specified then *type* is ignored.  Returns *400 Bad Request* if neither of *type* or *chars* is specified, or if *type* is not one of *default*, *safe*, or *hex*.
 
 **Types**
 
@@ -103,7 +99,7 @@ The password service will always produce at least 16 characters of output.
 
 ## http://api.lappsgrid.org/uuid
 
-Generates a type 4 UUID (Universally Unique IDentifier) according to (RFC 4122)[]https://www.ietf.org/rfc/rfc4122.txt]. In practice the service simply call `java.uitl.UUID.randomUUID().toString()` 
+Generates a type 4 UUID (Universally Unique IDentifier) according to [RFC 4122](https://www.ietf.org/rfc/rfc4122.txt). In practice the service simply calsl `java.uitl.UUID.randomUUID().toString()` 
 
 <table>
     <tr>
@@ -262,8 +258,42 @@ A RESTful proxy service for LAPPS Grid SOAP services.
 ```
 **Example**
 
+Assume *data.json* contains the following:
+
+```javascript
+{
+    "url": "http://vassar.lappsgrid.org/invoker/anc:stanford.tokenizer_2.0.0",
+    "username": "john_doe",
+    "password": "s3cr3t",
+    "data": {
+        "discriminator": "http://vocab.lappsgrid.org/ns/media/text",
+        "payload": "Karen flew to New York"
+    }
+}
+```
+
 ```bash
-> curl -H 'Content-Type: application/json' -X POST -d @data.json http://api.lappsgrid.org/soap-proxy
+> curl -i -H 'Content-Type: application/json' -X POST -d @data.json http://api.lappsgrid.org/soap-proxy
+
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Date: Thu, 23 Mar 2017 19:16:33 GMT
+Content-Type: application/json; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+{
+    "discriminator": "http://vocab.lappsgrid.org/ns/media/jsonld#lif",
+    "payload": {
+        "@context": "http://vocab.lappsgrid.org/context-1.0.0.jsonld",
+        "text": {
+            "@value": "Karen flew to New York"
+        },
+        "views": [
+            ...
+        ]
+    }
+}
 ```
 
 **Notes**
