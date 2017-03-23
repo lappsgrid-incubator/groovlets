@@ -48,7 +48,11 @@ if (!annotation) {
     }
     return
 }
-def rows = sql.rows("select s.url, v.service_id from server s, service v, produces p where p.annotation = $annotation AND p.fk_service_id = v.id AND v.fk_server_id = s.id")
+String query = "select s.url, v.service_id from server s, service v, produces p where p.annotation = $annotation AND p.fk_service_id = v.id AND v.fk_server_id = s.id"
+
+def rows = sql.rows(query)
+response.addHeader('lapps-query', query)
+response.addHeader('lapps-query-size', rows.size())
 
 if (headers.Accept?.contains('text/html')) {
     response.status = 200
