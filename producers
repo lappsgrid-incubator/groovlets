@@ -13,7 +13,7 @@ if (LOG_PATH == null) {
 
 DB_URL = System.getenv('PRODUCERS_DB')
 if (DB_URL == null) {
-    DB_URL = "jdbc:h2:/usr/share/producers"
+    DB_URL = "jdbc:h2:/usr/share/producers;AUTO_SERVER=TRUE"
 }
 Class.forName("org.h2.Driver")
 Sql sql = Sql.newInstance(DB_URL, "admin", "admin", "org.h2.Driver")
