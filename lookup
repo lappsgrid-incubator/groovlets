@@ -66,7 +66,42 @@ if (params.pid) {
         out.print row.url
         return
     }
+    response.status = 400
     out.println "No such pid"
+    return
 }
-response.status = 400
+def rows = sql.rows("select * from pid;")
+html.html {
+    head {
+        title 'Persistent Identifier Registry'
+    }
+    body {
+        h1 'Usage'
+        p '''The LAPPS Grid PID (Persistent ID) Registry can be used to determine the PID (a 
+UUID) for a give LAPPS web service.  The service URL can also be determined from the PID. 
+'''
+        ol {
+            li 'curl http://api.lappsgrid.org/url=http://service.example.com'
+            li 'curl http://api.lappsgrid.org/pid=1111-1111-1111'
+        }
+        p '''In the first example the PID for the service http://service.example.com will be
+returned.  In the second example the URL for the service identified by the PID 1111-1111-1111
+will be returned.'''
+        center {
+            table {
+                tr {
+                    th 'PID'
+                    th 'URL'
+                }
+                rows.each { row ->
+                    tr {
+                        td row.pid
+                        td row.url
+                    }
+                }
+            }
+        }
+    }
+}
+//response.status = 400
 
