@@ -35,6 +35,7 @@ if (method == 'OPTIONS') {
 if (method != 'GET') {
     response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
     response.addHeader('Allow', 'OPTIONS, GET')
+    out.println "Method not allowed. Only OPTIONS or GET permitted."
     return
 }
 
@@ -42,7 +43,7 @@ String annotation = params.annotation
 if (!annotation) {
     response.status = 400
     out.println "Annotation type missing."
-    params.each { k,v ->
+    params.each { k, v ->
         out.println "$k = $v"
     }
     return
@@ -71,8 +72,7 @@ if (headers.Accept?.contains('text/html')) {
             }
         }
     }
-}
-else if (headers.Accept?.contains('application/json')) {
+} else if (headers.Accept?.contains('application/json')) {
     List list = []
     rows.each { row ->
         list << "${row.url}/invoker/${row.service_id}"
@@ -80,15 +80,13 @@ else if (headers.Accept?.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println new groovy.json.JsonBuilder(list).toPrettyJson()
-}
-else if (headers.Accept?.contains('text/plain')) {
+} else if (headers.Accept?.contains('text/plain')) {
     response.status = 200
     response.contentType = 'text/plain'
     rows.each { row ->
         out.println "${row.url}/invoker/${row.service_id}"
     }
-}
-else if (headers.Accept.contains('application/xml')) {
+} else if (headers.Accept.contains('application/xml')) {
     response.status = 200
     response.contentType = 'text/xml'
     StringWriter writer = new StringWriter()
@@ -99,10 +97,12 @@ else if (headers.Accept.contains('application/xml')) {
         }
     }
     out.print writer.toString()
-}
-else {
+} else {
     response.status = HttpServletResponse.SC_NOT_ACCEPTABLE
+    response.contentType = 'text/plain'
     response.addHeader('Accept', 'text/html, text/xml, text/plain, application/json')
-    out.printnln "Please set the Accept: header"
+    out.println "Please set the Accept header."
+    out.println "This service can produce text/plain, text/html, application/xml, or application/json."
 }
+
 return
