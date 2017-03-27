@@ -55,7 +55,7 @@ if (params.url) {
         sql.executeInsert('insert into pid (url,pid) VALUES (:url,:pid);', [url:params.url, pid:pid])
         response.status = 201
     }
-    out.print pid
+    out.println pid
     return
 }
 
@@ -63,7 +63,7 @@ if (params.pid) {
     def row = sql.firstRow("select * from pid where pid = ${params.pid}")
     if (row) {
         response.status = 200
-        out.print row.url
+        out.println row.url
         return
     }
     response.status = 400
