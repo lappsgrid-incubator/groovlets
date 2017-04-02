@@ -31,7 +31,14 @@ if (method != 'GET') {
     return
 }
 
-def conditions = [] as MatchingCondition[]
+//def conditions = [] as MatchingCondition[]
+def conditions = new MatchingCondition[params.size()]
+int i = 0
+params.each { name,value ->
+    conditions[i] = new MatchingCondition(name, value, "PARTIAL")
+    ++i
+}
+
 def order = [] as Order[]
 SoapClientFactory f = new SoapClientFactory();
 ServiceManagementService s = f.create(
