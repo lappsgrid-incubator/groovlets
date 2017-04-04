@@ -1,0 +1,39 @@
+@GrabConfig(systemClassLoader=true)
+@Grab('org.lappsgrid:client:2.0.4')
+@Grab('org.lappsgrid:serialization:2.4.0')
+import org.lappsgrid.client.*
+import javax.servlet.http.HttpServletResponse
+
+String method = request.method
+String brandeis = 'http://eldrad.cs-i.brandeis.edu:8080/service_manager'
+String vassar = 'http://vassar.lappsgrid.org'
+
+if (method != 'GET') {
+    response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
+    response.addHeader('Allow', 'OPTIONS, GET')
+    out.println "Method not allowed. Only OPTIONS or GET permitted."
+    return
+}
+
+String id = params.id
+if (!id) {
+    response.status = 400
+    out.println "Missing ID value."
+    return
+}
+
+String url = "$brandeis/invoker/$id"
+if (id.startsWith('anc:')) {
+    url = "$vassar/invoker/$id"
+}
+
+response.status = 200
+//out.println "Pretend we got data from $url"
+
+def client = new ServiceClient(url, 'tester', 'tester')
+response.contentType = 'application/json'
+out.println groovy.json.JsonOutput.prettyPrint(client.getMetadata())
+
+
+
+
