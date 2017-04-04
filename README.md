@@ -99,7 +99,7 @@ The password service will always produce at least 16 characters of output.
 
 ## http://api.lappsgrid.org/uuid
 
-Generates a type 4 UUID (Universally Unique IDentifier) according to [RFC 4122](https://www.ietf.org/rfc/rfc4122.txt). In practice the service simply calsl `java.uitl.UUID.randomUUID().toString()` 
+Generates a *Type 4* UUID (Universally Unique IDentifier) according to [RFC 4122](https://www.ietf.org/rfc/rfc4122.txt). In practice the service simply calls `java.util.UUID.randomUUID().toString()` 
 
 <table>
     <tr>
