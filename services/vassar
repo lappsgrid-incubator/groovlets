@@ -63,7 +63,73 @@ while (more.elements.length > 0) {
     more = s.searchServices(count, PAGE_SIZE, conditions, order, "ALL")
 }
 result.totalCount = count
-response.status = 200
-response.contentType = 'application/json'
-out.println new groovy.json.JsonBuilder(result).toPrettyString()
+if (headers.Accept?.contains('application/json')) {
+    response.status = 200
+    response.contentType = 'application/json'
+    out.println new groovy.json.JsonBuilder(result).toPrettyString()
+}
+else if (headers.Accept?.contains('text/html')) {
+    html.html {
+        head {
+            title "Vassar Services"
+            style '''
+                html {
+                    margin: 10px 25px;
+                }
+                table {
+                    width: 90%;
+                    margin: 10px 20px;
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+                tr {
+                    vertical-align: top;
+                    padding: 0px;
+                    margin: px;
+                }
+                tr:nth-child(even) { background-color: #f5f5f5 }
+                th {
+                    color: white;
+                    background-color: #333;
+                }
+                th, td {
+                    text-align: left;
+                    padding: 3px 10px;
+                }
+                p {
+                    margin: 10px 20px;
+                }
+'''
+        }
+        body {
+            h1 "LAPPS Services on the Vassar node"
+            p "Total Services Registered: ${result.totalCount}"
+            table {
+                thead {
+                    th 'Name'
+                    th 'Endpoint'
+                    th ''
+                }
+                tbody {
+                    result.elements.each { e->
+                        String u = "http://api.lappsgrid.org/metadata?id=${e.serviceId}"
+                        String handler = "window.open('$u', '_self')"
+                        tr {
+                            td e.serviceName
+                            td e.endpointUrl
+                            td {
+                                button(onclick:"$handler", 'View metadata...')
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+else {
+    response.status = 406
+    response.addHeader('Accept', 'application/json, text/html')
+    out.println "Please request application/json or text/html"
+}
 

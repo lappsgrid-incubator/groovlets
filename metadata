@@ -2,6 +2,8 @@
 @Grab('org.lappsgrid:client:2.0.4')
 @Grab('org.lappsgrid:serialization:2.4.0')
 import org.lappsgrid.client.*
+import org.lappsgrid.serialization.Serializer
+
 import javax.servlet.http.HttpServletResponse
 
 String method = request.method
@@ -27,13 +29,117 @@ if (id.startsWith('anc:')) {
     url = "$vassar/invoker/$id"
 }
 
-response.status = 200
 //out.println "Pretend we got data from $url"
 
 def client = new ServiceClient(url, 'tester', 'tester')
-response.contentType = 'application/json'
-out.println groovy.json.JsonOutput.prettyPrint(client.getMetadata())
+String json = client.getMetadata();
+if (headers.Accept?.contains('application/json')) {
+    response.status = 200
+    response.contentType = 'application/json'
+    out.println groovy.json.JsonOutput.prettyPrint(json)
+    return
+}
+else if (headers.Accept?.contains('text/html')) {
+    def data = Serializer.parse(json, HashMap)
+    // TODO should check for errors here.
+    def payload = data.payload
+    html.html {
+        head {
+            title 'Serivce Metadata'
+            style '''
+                html {
+                    margin: 10px 50px;
+                }
+                table {
+                    width: 60%;
+                    margin: 10px 20px;
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                }
+                tr {
+                    vertical-align: top;
+                    padding: 0px;
+                    margin: px;
+                }
+                tr:nth-child(odd) { background-color: #f5f5f5 }
+                td {
+                    padding: 3px 10px;
+                }
+                .name {
+                    width:15%;
+                    font-weight: bold;
+                }
+            '''
 
+        }
+        body {
+            h1 "Service metadata for ${payload.name}"
+            table {
+                row 'URL', url
+                row 'Version', payload.version
+                row 'Description', payload.description
+                row 'Vendor', payload.vendor
+                row 'Allow', payload.allow
+                row 'License', payload.license
+            }
+            make_table('Service Requirements', payload.requires)
+            make_table('Service Output', payload.produces)
+        }
+    }
+}
+else {
+    response.status = 406
+    response.contentType = 'text/plain'
+    response.addHeader('Accept', 'application/json, text/html')
+    out.println "Please request application/json or text/html"
+}
+return
 
+void make_table(String heading, Map map) {
+    if (map) {
+        html.h2 heading
+        html.table {
+            row 'Encoding', map.encoding
+            row 'Language', map.language?.join(', ')
+            row 'Formats', map.format
+            row 'Annotations', map.annotations
+        }
+    }
+}
+
+void row(String name, String value) {
+    if (value) {
+        html.tr {
+            td(class:'name', name)
+            td value
+        }
+    }
+}
+
+void row(String name, List values) {
+    if (values) {
+        html.tr {
+            td(class:'name', name)
+            td { mkp.yieldUnescaped(values.join("<br/>")) }
+        }
+
+//        if (values.size() == 1) {
+//           html.tr {
+//               td(class:'name', name)
+//               td values[0]
+//           }
+//        }
+//        else {
+//            html.tr {
+//                td(class:'name', name)
+//                td {
+//                    values.each {
+//                        mkp.yieldUnescaped "$it <br/>"
+//                    }
+//                }
+//            }
+//        }
+    }
+}
 
 
