@@ -54,7 +54,7 @@ else if (headers.Accept?.contains('text/html')) {
                     width: 60%;
                     margin: 10px 20px;
                     border: 1px solid black;
-                    border-collapse: collapse;
+                    border-radius: 5px;
                 }
                 tr {
                     vertical-align: top;
@@ -73,7 +73,7 @@ else if (headers.Accept?.contains('text/html')) {
 
         }
         body {
-            h1 "Service metadata for ${payload.name}"
+            h1 "Service : ${payload.name}"
             table {
                 row 'URL', url
                 row 'Version', payload.version
@@ -122,23 +122,6 @@ void row(String name, List values) {
             td(class:'name', name)
             td { mkp.yieldUnescaped(values.join("<br/>")) }
         }
-
-//        if (values.size() == 1) {
-//           html.tr {
-//               td(class:'name', name)
-//               td values[0]
-//           }
-//        }
-//        else {
-//            html.tr {
-//                td(class:'name', name)
-//                td {
-//                    values.each {
-//                        mkp.yieldUnescaped "$it <br/>"
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
