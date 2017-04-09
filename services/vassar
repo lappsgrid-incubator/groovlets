@@ -35,7 +35,7 @@ params.each { name,value ->
     conditions[i] = new MatchingCondition(name, value, "PARTIAL")
     ++i
 }
-//def conditions = [] as MatchingCondition[]
+
 def order = [] as Order[]
 SoapClientFactory f = new SoapClientFactory();
 ServiceManagementService s = f.create(
@@ -46,6 +46,7 @@ RequestAttributes attr = (RequestAttributes)s;
 attr.setUserId(username);
 attr.setPassword(password);
 
+// The data that will be rendered as JSON or passed to the html template.
 Map result = [:]
 result.url = url
 result.totalCount = 0
@@ -69,63 +70,15 @@ if (!headers.Accept || headers.Accept?.contains('application/json')) {
     out.println new groovy.json.JsonBuilder(result).toPrettyString()
 }
 else if (headers.Accept?.contains('text/html')) {
-    html.html {
-        head {
-            title "Vassar Services"
-            style '''
-                html {
-                    margin: 10px 25px;
-                }
-                table {
-                    width: 90%;
-                    margin: 10px 20px;
-                    border: 1px solid black;
-                    border-collapse: collapse;
-                }
-                tr {
-                    vertical-align: top;
-                    padding: 0px;
-                    margin: px;
-                }
-                tr:nth-child(even) { background-color: #f5f5f5 }
-                th {
-                    color: white;
-                    background-color: #333;
-                }
-                th, td {
-                    text-align: left;
-                    padding: 3px 10px;
-                }
-                p {
-                    margin: 10px 20px;
-                }
-'''
-        }
-        body {
-            h1 "LAPPS Services on the Vassar node"
-            p "Total Services Registered: ${result.totalCount}"
-            table {
-                thead {
-                    th 'Name'
-                    th 'Endpoint'
-                    th ''
-                }
-                tbody {
-                    result.elements.each { e->
-                        String u = "http://api.lappsgrid.org/metadata?id=${e.serviceId}"
-                        String handler = "window.open('$u', '_self')"
-                        tr {
-                            td e.serviceName
-                            td e.endpointUrl
-                            td {
-                                button(onclick:"$handler", 'View metadata...')
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    File template = new File('templates/services.template')
+    result.title = 'Vassar Services'
+    result.heading = "LAPPS Services on the Vassar node"
+    Binding binding = new Binding()
+    binding.html = html
+    binding.data = result
+    def shell = new GroovyShell(binding)
+    def script = shell.parse(template)
+    script.run()
 }
 else {
     response.status = 406
