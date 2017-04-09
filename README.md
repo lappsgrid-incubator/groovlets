@@ -364,7 +364,7 @@ Assume *data.json* contains the following:
     "password": "s3cr3t",
     "data": {
         "discriminator": "http://vocab.lappsgrid.org/ns/media/text",
-        "payload": "Karen flew to New York"
+        "payload": "Karen flew to New York."
     }
 }
 ```
