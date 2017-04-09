@@ -29,11 +29,9 @@ if (id.startsWith('anc:')) {
     url = "$vassar/invoker/$id"
 }
 
-//out.println "Pretend we got data from $url"
-
 def client = new ServiceClient(url, 'tester', 'tester')
 String json = client.getMetadata();
-if (!headers.Accept || headers.Accept?.contains('application/json')) {
+if (!headers.Accept || headers.Accept.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println groovy.json.JsonOutput.prettyPrint(json)
@@ -42,50 +40,12 @@ if (!headers.Accept || headers.Accept?.contains('application/json')) {
 else if (headers.Accept?.contains('text/html')) {
     def data = Serializer.parse(json, HashMap)
     // TODO should check for errors here.
-    def payload = data.payload
-    html.html {
-        head {
-            title 'Serivce Metadata'
-            style '''
-                html {
-                    margin: 10px 50px;
-                }
-                table {
-                    width: 60%;
-                    margin: 10px 20px;
-                    border: 1px solid black;
-                    border-radius: 5px;
-                }
-                tr {
-                    vertical-align: top;
-                    padding: 0px;
-                    margin: px;
-                }
-                tr:nth-child(odd) { background-color: #f5f5f5 }
-                td {
-                    padding: 3px 10px;
-                }
-                .name {
-                    width:15%;
-                    font-weight: bold;
-                }
-            '''
-
-        }
-        body {
-            h1 "Service : ${payload.name}"
-            table {
-                row 'URL', url
-                row 'Version', payload.version
-                row 'Description', payload.description
-                row 'Vendor', payload.vendor
-                row 'Allow', payload.allow
-                row 'License', payload.license
-            }
-            make_table('Service Requirements', payload.requires)
-            make_table('Service Output', payload.produces)
-        }
-    }
+    def binding = new Binding()
+    binding.url = url
+    binding.html = html
+    binding.payload = data.payload
+    def script = new GroovyShell(binding).parse(new File('templates/md'))
+    script.run()
 }
 else {
     response.status = 406
@@ -94,35 +54,3 @@ else {
     out.println "Please request application/json or text/html"
 }
 return
-
-void make_table(String heading, Map map) {
-    if (map) {
-        html.h2 heading
-        html.table {
-            row 'Encoding', map.encoding
-            row 'Language', map.language?.join(', ')
-            row 'Formats', map.format
-            row 'Annotations', map.annotations
-        }
-    }
-}
-
-void row(String name, String value) {
-    if (value) {
-        html.tr {
-            td(class:'name', name)
-            td value
-        }
-    }
-}
-
-void row(String name, List values) {
-    if (values) {
-        html.tr {
-            td(class:'name', name)
-            td { mkp.yieldUnescaped(values.join("<br/>")) }
-        }
-    }
-}
-
-

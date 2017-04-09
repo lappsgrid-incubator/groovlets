@@ -1,6 +1,6 @@
 # LAPPS Grid API Services
 
-The services available at *http://api.lappsgrid.org* are typically proof-of-concept prototype services implemented as [Groovlets](http://docs.groovy-lang.org/latest/html/documentation/servlet-userguide.html).  A Groovlet is simply a Groovy script that is run inside a Java Servlet container.  Currently calls to http://api.lappsgrid.org will forward to a Jetty server (see server.groovy) that serves these scripts as web services.
+The services available at `http://api.lappsgrid.org` are typically proof-of-concept prototype services implemented as [Groovlets](http://docs.groovy-lang.org/latest/html/documentation/servlet-userguide.html).  A Groovlet is simply a Groovy script that is run inside a Java Servlet container.  Currently calls to `http://api.lappsgrid.org` will forward to a Jetty server (see server.groovy) that serves these scripts as web services.
 
 **Note** The Groovlets repository has a GitHub webhook enabled so pushing code to the *master* branch automatically deploys these services. 
 
@@ -274,7 +274,7 @@ Valid search keys are:
 
 ```
 curl -H 'Accept: text/html' http://api.lappsgrid.org/service/brandeis
-curl -H 'Accept: application/json' http://api.lappsgrid.org/service/vassar?serviceName=gate
+curl http://api.lappsgrid.org/service/vassar?serviceName=gate
 ```
 
 <a name="metadata"></a>

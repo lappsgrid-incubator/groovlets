@@ -70,7 +70,7 @@ if (!headers.Accept || headers.Accept?.contains('application/json')) {
     out.println new groovy.json.JsonBuilder(result).toPrettyString()
 }
 else if (headers.Accept?.contains('text/html')) {
-    File template = new File('templates/services.template')
+    File template = new File('templates/services')
     result.title = 'Vassar Services'
     result.heading = "LAPPS Services on the Vassar node"
     Binding binding = new Binding()
