@@ -9,6 +9,8 @@ The services available at *http://api.lappsgrid.org* are typically proof-of-conc
 - [uuid](#uuid) - generates a type 4 UUID
 - [lookup](#lookup) - lookup persistent identifiers for LAPPS services
 - [producers](#producers) - find all LAPPS services that produce a given annotation type
+- [services](#services) - list all services installed on a particular node
+- [metadata](#metadata) - fetch the metadata for a given service
 - [soap-proxy](#soap-proxy) - RESTful proxy for LAPPS SOAP services
 
 # Available Services
@@ -31,6 +33,7 @@ The **webhook** that GitHub will POST messages to when code is pushed to the mas
      <tr>
         <td><b>Accepts</b></td>
         <td>application/json</td>
+     </tr>
      <tr>
         <td><b>Returns</b></td>
         <td>
@@ -83,7 +86,7 @@ The *safe* type is intended to be used to generate passwords or keys that can be
 
 **Examples**
 
-```bash
+```
 > curl http://api.lappsgrid.org/password
 =F9sXKGn2lteDdvk
 
@@ -201,7 +204,7 @@ Returns a list of services that produce a given annotation type.
 
 **Example**
 
-```bash
+```
 > curl -i -H 'Accept: text/plain' http://api.lappsgrid.org/producers?annotation=http://vocab.lappsgrid.org/VerbChunk
 
 HTTP/1.1 200 OK
@@ -215,7 +218,100 @@ Lapps-Result-Set-Size: 2
 http://vassar.lappsgrid.org/invoker/anc:gate.vpchunker_2.1.0
 http://vassar.lappsgrid.org/invoker/anc:gate.vpchunker_2.0.0
 ```
+
+**NOTE** The database used by the `/producers` service is not up to date and the output from this
+service should only be used for testing.
+
+<a name="services"></a>
   
+## http://api.lappsgrid.org/services
+
+Display the services installed on a service manager instance.
+
+<table>
+    <tr>
+        <td style="width:20%"><b>Methods</b></td>
+        <td>GET</td>
+     </tr>
+     <tr>
+        <td><b>URL</b></td>
+        <td>/services/:node?:key=:value [&:key=value...]</td>
+     </tr>
+     <tr>
+        <td><b>Returns</b></td>
+        <td>
+            application/json, text/html
+        </td>
+     </tr>
+</table>
+
+If an `Accept` header is not specified `application/json` will be returned.
+
+**Path Parameters**
+
+- **node** One of `vassar` or `brandeis`
+
+**URL Parameters**
+
+- **key** a Service Manager search key used to filter services
+- **value** the value to be matched. The value matches if it is a substring of the key's value. Text matches are case-insensitive.
+
+Valid search keys are:
+
+* active
+* endpointUrl
+* instanceType
+* ownerUserId
+* registeredDate
+* serviceDescription
+* serviceId
+* serviceName
+* serviceType
+* serviceTypeDomain
+* updatedDate
+
+**Example**
+
+```
+curl -H 'Accept: text/html' http://api.lappsgrid.org/service/brandeis
+curl -H 'Accept: application/json' http://api.lappsgrid.org/service/vassar?serviceName=gate
+```
+
+<a name="metadata"></a>
+  
+## http://api.lappsgrid.org/metadata
+
+Display metadata about a single service.
+
+<table>
+    <tr>
+        <td style="width:20%"><b>Methods</b></td>
+        <td>GET</td>
+     </tr>
+     <tr>
+        <td><b>URL</b></td>
+        <td>/metadata?id=:id</td>
+     </tr>
+     <tr>
+        <td><b>Returns</b></td>
+        <td>
+            application/json, text/html
+        </td>
+     </tr>
+</table>
+
+If an `Accept` header is not specified `application/json` will be returned.
+
+**URL Parameters**
+
+- **id** the ID, including gridId, of the service to get metadata from.
+
+**Example**
+
+```
+curl http://api.lappsgrid.org/metadata?id=anc:gate.tokenzier_2.2.0
+```
+
 <a name="soap-proxy"></a>
   
 ## http://api.lappsgrid.org/soap-proxy
@@ -234,6 +330,7 @@ A RESTful proxy service for LAPPS Grid SOAP services.
      <tr>
         <td><b>Accepts</b></td>
         <td>application/json</td>
+     </tr>
      <tr>
         <td><b>Returns</b></td>
         <td>
@@ -244,7 +341,7 @@ A RESTful proxy service for LAPPS Grid SOAP services.
 
 **Data Format**
 
-```javascript
+```
 {
     url: [string],
     username: [string] (optional),
@@ -260,7 +357,7 @@ A RESTful proxy service for LAPPS Grid SOAP services.
 
 Assume *data.json* contains the following:
 
-```javascript
+```
 {
     "url": "http://vassar.lappsgrid.org/invoker/anc:stanford.tokenizer_2.0.0",
     "username": "john_doe",
@@ -272,7 +369,7 @@ Assume *data.json* contains the following:
 }
 ```
 
-```bash
+```
 > curl -i -H 'Content-Type: application/json' -X POST -d @data.json http://api.lappsgrid.org/soap-proxy
 
 HTTP/1.1 200 OK

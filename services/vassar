@@ -63,7 +63,7 @@ while (more.elements.length > 0) {
     more = s.searchServices(count, PAGE_SIZE, conditions, order, "ALL")
 }
 result.totalCount = count
-if (headers.Accept?.contains('application/json')) {
+if (!headers.Accept || headers.Accept?.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println new groovy.json.JsonBuilder(result).toPrettyString()
