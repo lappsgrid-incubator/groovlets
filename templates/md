@@ -9,6 +9,8 @@ html.html {
                     width: 60%;
                     margin: 10px 20px;
                     border: 1px solid black;
+                    -moz-border-radius: 5px;
+                    -webkit-border-radius: 5px;
                     border-radius: 5px;
                 }
                 tr {
