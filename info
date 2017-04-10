@@ -1,46 +1,89 @@
 def method = request.method
  
-if (!session) {
-    session = request.getSession(true)
-}
- 
-if (!session.groovlet) {
-    session.groovlet = 'Groovlets rock!'
-}
- 
 html.html {
     head {
-        title 'Groovlet info'
+        title 'LAPPS Grid HTTP API'
+        style '''
+                html {
+                    margin: 10px 50px;
+                }
+                table {
+                    width: 60%;
+                    margin: 10px 20px;
+                    border: 1px solid black;
+                    -moz-border-radius: 5px;
+                    -webkit-border-radius: 5px;
+                    border-radius: 5px;
+                }
+                tr {
+                    vertical-align: top;
+                    padding: 0px;
+                    margin: px;
+                }
+                tr:nth-child(odd) { background-color: #f5f5f5 }
+                td {
+                    padding: 3px 10px;
+                }
+                .name {
+                    width:15%;
+                    font-weight: bold;
+                }
+'''
     }
     body {
-        h1 'General info'
-        ul {
-            li "Method: ${method}"
-            li "RequestURI: ${request.requestURI}"
-            li "session.groovlet: ${session.groovlet}"
-            li "application.version: ${context.version}"
-        }
-         
-        h1 'Headers'
-        ul {
-            headers.each {
-                li "${it.key} = ${it.value}"
+        h1 'LAPPS Grid HTTP API'
+        p 'The following services are available via http://api.lappsgrid.org'
+        table {
+            tr {
+                th width:'15%', 'Path'
+                th 'Description'
+            }
+            tr {
+                td '/pull'
+                td 'Webhook called by GitHub when respositories are updated.'
+            }
+            tr {
+                td '/codes'
+                td 'Dummy service for testing REST client status code handing'
+            }
+            tr {
+                td '/password'
+                td 'Use to generate secure passwords or keys programmatically.'
+            }
+            tr {
+                td '/uuid'
+                td 'Generates Type 4 UUID values'
+            }
+            tr {
+                td '/services/:node'
+                td 'List services registered to a Service Manager instance.'
+            }
+            tr {
+                td '/info'
+                td 'Displays this information page.'
+            }
+            tr {
+                td valign:'top', '/lookup'
+                td 'Look up the PID assigned to LAPPS services or the service that corresponds to a PID'
+            }
+            tr {
+                td '/metadata'
+                td 'Obtain metadata about a LAPPS service.'
+            }
+            tr {
+                td valign:'top', '/producers'
+                td 'Find all LAPPS service that produce a given annotation type. [experimental]'
+
+            }
+            tr {
+                td valign:'top', '/soap-proxy'
+                td 'A REST-like proxy for LAPPS Grid SOAP services.'
             }
         }
-        h1 'Request'
-        ul {
-        	li "Path Info: ${request.pathInfo}"
-        	li "Query String: ${request.queryString}"
-        }
-        h1 'Parameters'
-        ul {
-        	request.parameterMap.each {
-        		li "${it.key} = ${it.value[0]}"
-        	}
-        }
-        h1 'Body'
-        pre {
-        	request.reader.text
-        }
+        mkp.yieldUnescaped '''<p>See the README in the <a href='https://github.com/lappsgrid-incubator/groovlets'>GitHub repository</a> for more information.</p>'''
+        h3 'NOTE'
+        mkp.yieldUnescaped '''<p>These services are refered to as <em>HTTP services</em> rather than <em>REST services</em>. While many of the services do conform to the REST Manifesto (for lack of a better term) some do not.  For example the <i>soap-proxy</i> accepts POST requests, but no <em>resource</em> is created.</p>'''
+
+        p align:'center', 'Copyright 2017 The Language Applications Grid.'
     }
 }
