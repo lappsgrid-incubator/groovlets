@@ -51,7 +51,7 @@ else if (headers.Accept?.contains('text/html')) {
     binding.url = url
     binding.html = html
     binding.payload = data.payload
-    def script = new GroovyShell(binding).parse(new File('templates/metadata.gsp'))
+    def script = new GroovyShell(binding).parse(new File('src/main/templates/metadata.gsp'))
     script.run()
 }
 else {
