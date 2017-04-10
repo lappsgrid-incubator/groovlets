@@ -1,15 +1,17 @@
 @GrabConfig(systemClassLoader=true)
 @Grab('org.lappsgrid:client:2.0.4')
-@Grab('org.lappsgrid:serialization:2.4.0')
 import org.lappsgrid.client.*
+
+@Grab('org.lappsgrid:serialization:2.4.0')
 import org.lappsgrid.serialization.Serializer
 
 import javax.servlet.http.HttpServletResponse
 
-String method = request.method
 String brandeis = 'http://eldrad.cs-i.brandeis.edu:8080/service_manager'
 String vassar = 'http://vassar.lappsgrid.org'
 
+// Only accept GET requests.
+String method = request.method
 if (method != 'GET') {
     response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
     response.addHeader('Allow', 'OPTIONS, GET')
@@ -17,6 +19,7 @@ if (method != 'GET') {
     return
 }
 
+// The id parameter is required.
 String id = params.id
 if (!id) {
     response.status = 400
@@ -24,10 +27,12 @@ if (!id) {
     return
 }
 
+// Derive the service URL from the ID.
 String url = "$brandeis/invoker/$id"
 if (id.startsWith('anc:')) {
     url = "$vassar/invoker/$id"
 }
+
 
 def client = new ServiceClient(url, 'tester', 'tester')
 String json = client.getMetadata();
@@ -44,7 +49,7 @@ else if (headers.Accept?.contains('text/html')) {
     binding.url = url
     binding.html = html
     binding.payload = data.payload
-    def script = new GroovyShell(binding).parse(new File('templates/md'))
+    def script = new GroovyShell(binding).parse(new File('templates/metadata.gsp'))
     script.run()
 }
 else {
