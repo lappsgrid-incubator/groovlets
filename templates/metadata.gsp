@@ -27,7 +27,6 @@ html.html {
                     font-weight: bold;
                 }
             '''
-
     }
     body {
         h1 "Service : ${payload.name}"
