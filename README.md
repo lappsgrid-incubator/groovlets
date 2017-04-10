@@ -148,7 +148,7 @@ The LAPPS Grid Peristent Identifier Registry. Use this service to lookup the PID
      </tr>
      <tr>
         <td><b>Returns</b></td>
-        <td>
+        <td valign="top">
             text/plain<br/>
             text/html
         </td>
@@ -192,7 +192,7 @@ Returns a list of services that produce a given annotation type.
         <td>/producers?annotation=:url</td>
      </tr>
      <tr>
-        <td><b>Returns</b></td>
+        <td valign="top"><b>Returns</b></td>
         <td>
             text/html<br/>
             text/plain<br/>
@@ -201,6 +201,8 @@ Returns a list of services that produce a given annotation type.
         </td>
      </tr>
 </table>
+
+If an `Accept` header is not specified `application/json` will be returned.
 
 **Example**
 
@@ -245,8 +247,6 @@ Display the services installed on a service manager instance.
      </tr>
 </table>
 
-If an `Accept` header is not specified `application/json` will be returned.
-
 **Path Parameters**
 
 - **node** One of `vassar` or `brandeis`
@@ -269,6 +269,8 @@ Valid search keys are:
 * serviceType
 * serviceTypeDomain
 * updatedDate
+
+If no key/value pairs are specified as search terms then all services registered on the Service Manager instance will be listed.
 
 **Example**
 
