@@ -64,7 +64,7 @@ while (more.elements.length > 0) {
     more = s.searchServices(count, PAGE_SIZE, conditions, order, "ALL")
 }
 result.totalCount = count
-if (!headers.Accept || headers.Accept?.contains('application/json')) {
+if (headers.Accept == '*/*' || headers.Accept?.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println new groovy.json.JsonBuilder(result).toPrettyString()
@@ -84,5 +84,6 @@ else {
     response.status = 406
     response.addHeader('Accept', 'application/json, text/html')
     out.println "Please request application/json or text/html"
+    out.println "Sent Accept: ${headers.Accept}"
 }
 
