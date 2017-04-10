@@ -1,3 +1,5 @@
+package src.main.groovy
+
 @GrabConfig(systemClassLoader=true)
 @Grab('org.lappsgrid:client:2.0.4')
 import org.lappsgrid.client.*

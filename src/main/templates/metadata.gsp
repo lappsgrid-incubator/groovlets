@@ -1,32 +1,7 @@
 html.html {
     head {
         title 'Serivce Metadata'
-        style '''
-                html {
-                    margin: 10px 50px;
-                }
-                table {
-                    width: 60%;
-                    margin: 10px 20px;
-                    border: 1px solid black;
-                    -moz-border-radius: 5px;
-                    -webkit-border-radius: 5px;
-                    border-radius: 5px;
-                }
-                tr {
-                    vertical-align: top;
-                    padding: 0px;
-                    margin: px;
-                }
-                tr:nth-child(odd) { background-color: #f5f5f5 }
-                td {
-                    padding: 3px 10px;
-                }
-                .name {
-                    width:15%;
-                    font-weight: bold;
-                }
-            '''
+        link rel:'stylesheet', href:'/style/main.css'
     }
     body {
         h1 "Service : ${payload.name}"

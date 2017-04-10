@@ -1,3 +1,4 @@
+package src.main.groovy
 
 @GrabConfig(systemClassLoader=true)
 @Grab('com.h2database:h2:1.4.194')
@@ -74,6 +75,7 @@ def rows = sql.rows("select * from pid;")
 html.html {
     head {
         title 'Persistent Identifier Registry'
+        link rel:'stylesheet', href: '/style/main.css'
     }
     body {
         h1 'Usage'

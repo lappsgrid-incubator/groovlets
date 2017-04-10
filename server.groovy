@@ -1,5 +1,6 @@
 @Grab(group='org.mortbay.jetty', module='jetty-embedded', version='6.1.26')
 import org.mortbay.jetty.Server
+import org.mortbay.jetty.handler.ResourceHandler
 import org.mortbay.jetty.servlet.*
 import groovy.servlet.*
 
@@ -15,12 +16,19 @@ import javax.servlet.http.HttpServletResponse
 def startJetty() {
     def jetty = new Server(8888)
 
+    // Use a DefaultServlet to serve static content out of /style.  This needs
+    // to be defined before the GroovyServlet since the GroovyServlet redirects '/'
+    def styleContext = new Context(jetty, '/style', Context.SESSIONS)
+    styleContext.resourceBase = 'src/main/style'
+    styleContext.addServlet(DefaultServlet, '/*')
+
     def context = new Context(jetty, '/', Context.SESSIONS)  // Allow sessions.
     context.setInitParams()
-    context.resourceBase = '.'  // Look in current dir for Groovy scripts.
+    context.resourceBase = 'src/main/groovy'  // Look in current dir for Groovy scripts.
     context.addServlet(GroovyServlet, '/*')  // All files ending with .groovy will be served.
     context.addFilter(RedirectFilter, '/', 1)
     context.addFilter(NotFoundFilter, '/*', 1)
+
     jetty.start()
 }
  
@@ -57,7 +65,7 @@ class NotFoundFilter implements Filter {
         }
         else {
             HttpServletResponse response = (HttpServletResponse) servletResponse
-            response.sendError(404, "Not found")
+            response.sendError(404)
         }
     }
 
@@ -65,9 +73,9 @@ class NotFoundFilter implements Filter {
     void destroy() { /* NOP */ }
 
     private boolean accept(String path) {
-        if (path.startsWith('/templates')) return false
+//        if (path.startsWith('/templates')) return false
         if (path.startsWith('/.git')) return false
-        if (path.startsWith('/groovlets')) return false
+//        if (path.startsWith('/groovlets')) return false
         return true
     }
 }

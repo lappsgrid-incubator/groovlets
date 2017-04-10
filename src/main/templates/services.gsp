@@ -1,34 +1,7 @@
 html.html {
     head {
         title data.title
-        style '''
-            html {
-                margin: 10px 25px;
-            }
-            table {
-                width: 90%;
-                margin: 10px 20px;
-                border: 1px solid black;
-                border-radius: 5px;
-            }
-            tr {
-                /* vertical-align: top; */
-                padding: 0px;
-                margin: px;
-            }
-            tr:nth-child(even) { background-color: #eee; }
-            th {
-                color: white;
-                background-color: #333;
-            }
-            th, td {
-                text-align: left;
-                padding: 3px 10px;
-            }
-            p {
-                margin: 10px 20px;
-            }
-'''
+        link rel:'stylesheet', href:'/style/main.css'
     }
     body {
         h1 data.heading

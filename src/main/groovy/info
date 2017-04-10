@@ -1,3 +1,5 @@
+package src.main.groovy
+
 def method = request.method
  
 html.html {

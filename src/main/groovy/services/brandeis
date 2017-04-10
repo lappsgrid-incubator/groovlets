@@ -71,7 +71,7 @@ if (headers.Accept == '*/*' || headers.Accept?.contains('application/json')) {
 }
 else
 if (headers.Accept?.contains('text/html')) {
-    File template = new File('templates/services.gsp')
+    File template = new File('src/main/templates/services.gsp')
     Binding binding = new Binding()
     result.title = 'Brandeis Services'
     result.heading = "LAPPS Services on the Brandeis node"

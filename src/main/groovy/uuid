@@ -1,3 +1,5 @@
+package src.main.groovy
+
 response.status = 200
 response.contentType = 'text/plain'
 out.println UUID.randomUUID().toString()
