@@ -20,7 +20,7 @@ def startJetty() {
     context.resourceBase = '.'  // Look in current dir for Groovy scripts.
     context.addServlet(GroovyServlet, '/*')  // All files ending with .groovy will be served.
     context.addFilter(RedirectFilter, '/', 1)
-    context.addFilter(DropFilter, '/*', 1)
+    context.addFilter(NotFoundFilter, '/*', 1)
     jetty.start()
 }
  
@@ -28,6 +28,7 @@ println "Starting Jetty, press Ctrl+C to stop."
 startJetty()
 return
 
+/** Redirect everything to the /info page. */
 class RedirectFilter implements Filter {
     @Override
     void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
@@ -42,7 +43,8 @@ class RedirectFilter implements Filter {
     void destroy() { /* NOP */ }
 }
 
-class DropFilter implements Filter {
+/** Return a 404 for matching paths */
+class NotFoundFilter implements Filter {
 
     @Override
     void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
@@ -50,7 +52,6 @@ class DropFilter implements Filter {
     @Override
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest
-        println "FILTERING " + request.pathInfo
         if (accept(request.pathInfo)) {
             chain.doFilter(servletRequest, servletResponse)
         }
@@ -67,7 +68,6 @@ class DropFilter implements Filter {
         if (path.startsWith('/templates')) return false
         if (path.startsWith('/.git')) return false
         if (path.startsWith('/groovlets')) return false
-        if (path == '/') return false
         return true
     }
 }
