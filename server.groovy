@@ -24,8 +24,8 @@ def startJetty() {
 
     def context = new Context(jetty, '/', Context.SESSIONS)  // Allow sessions.
     context.setInitParams()
-    context.resourceBase = 'src/main/groovy'  // Look in current dir for Groovy scripts.
-    context.addServlet(GroovyServlet, '/*')  // All files ending with .groovy will be served.
+    context.resourceBase = 'src/main/groovy'
+    context.addServlet(GroovyServlet, '/*')  // All files will be served.
     context.addFilter(RedirectFilter, '/', 1)
     context.addFilter(NotFoundFilter, '/*', 1)
 
@@ -51,7 +51,10 @@ class RedirectFilter implements Filter {
     void destroy() { /* NOP */ }
 }
 
-/** Return a 404 for matching paths */
+/**
+ * Return a 404 for matching paths. This is used to block access to some items in the
+ * resourceBase that we do not want served as Groovlets.
+ */
 class NotFoundFilter implements Filter {
 
     @Override
