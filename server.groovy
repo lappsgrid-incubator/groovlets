@@ -2,17 +2,72 @@
 import org.mortbay.jetty.Server
 import org.mortbay.jetty.servlet.*
 import groovy.servlet.*
- 
+
+import javax.servlet.Filter
+import javax.servlet.FilterChain
+import javax.servlet.FilterConfig
+import javax.servlet.ServletException
+import javax.servlet.ServletRequest
+import javax.servlet.ServletResponse
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 def startJetty() {
     def jetty = new Server(8888)
 
     def context = new Context(jetty, '/', Context.SESSIONS)  // Allow sessions.
+    context.setInitParams()
     context.resourceBase = '.'  // Look in current dir for Groovy scripts.
     context.addServlet(GroovyServlet, '/*')  // All files ending with .groovy will be served.
-    context.setAttribute('version', '1.0')  // Set an context attribute.
-     
+    context.addFilter(RedirectFilter, '/', 1)
+    context.addFilter(DropFilter, '/*', 1)
     jetty.start()
 }
  
 println "Starting Jetty, press Ctrl+C to stop."
 startJetty()
+return
+
+class RedirectFilter implements Filter {
+    @Override
+    void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
+
+    @Override
+    void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) servletResponse
+        response.sendRedirect('http://api.lappsgrid.org/info')
+    }
+
+    @Override
+    void destroy() { /* NOP */ }
+}
+
+class DropFilter implements Filter {
+
+    @Override
+    void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
+
+    @Override
+    void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest
+        println "FILTERING " + request.pathInfo
+        if (accept(request.pathInfo)) {
+            chain.doFilter(servletRequest, servletResponse)
+        }
+        else {
+            HttpServletResponse response = (HttpServletResponse) servletResponse
+            response.sendError(404, "Not found")
+        }
+    }
+
+    @Override
+    void destroy() { /* NOP */ }
+
+    private boolean accept(String path) {
+        if (path.startsWith('/templates')) return false
+        if (path.startsWith('/.git')) return false
+        if (path.startsWith('/groovlets')) return false
+        if (path == '/') return false
+        return true
+    }
+}
