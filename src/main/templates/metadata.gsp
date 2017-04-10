@@ -30,20 +30,47 @@ void make_table(String heading, Map map) {
     }
 }
 
-void row(String name, String value) {
+// Create a new table row, but don't create links for the value.
+void simple_row(String name, String value) {
     if (value) {
         html.tr {
-            td(class:'name', name)
+            td name
             td value
         }
     }
 }
 
+// Create a new table row.  If the value starts with http it will be included in
+// an <a/> element.
+void row(String name, String value) {
+    if (value) {
+        html.tr {
+            td(class:'name', name)
+            if (value.startsWith('http')) {
+                td { a href:value, value }
+            }
+            else {
+                td value
+            }
+        }
+    }
+}
+
+// Creates a new table row where is the value is a list of String. The list values
+// will be wrapped in <a/> tags if they start with http and then concatenated with
+// <br/> tags.
 void row(String name, List values) {
+    def link = { url ->
+        if (url.startsWith('http')) {
+            return "<a href='$url'>$url</a>"
+        }
+        return url
+    }
+
     if (values) {
         html.tr {
             td(class:'name', name)
-            td { mkp.yieldUnescaped(values.join("<br/>")) }
+            td { mkp.yieldUnescaped(values.collect{ link(it) }.join("<br/>")) }
         }
     }
 }
