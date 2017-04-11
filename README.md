@@ -2,8 +2,9 @@
 
 The services available at `http://api.lappsgrid.org` are typically proof-of-concept prototype services implemented as [Groovlets](http://docs.groovy-lang.org/latest/html/documentation/servlet-userguide.html).  A Groovlet is simply a Groovy script that is run inside a Java Servlet container.  Currently calls to `http://api.lappsgrid.org` will forward to a Jetty server (see server.groovy) that serves these scripts as web services.
 
-**Note** The Groovlets repository has a GitHub webhook enabled so pushing code to the *master* branch automatically deploys these services. 
+**Note** The Groovlets repository has a GitHub webhook enabled so pushing code to the *master* branch automatically deploys these services to api.lappsgrid.org. 
 
+### Service Index
 - [pull](#pull) - webhook used by GitHub
 - [password](#password) - generates random strings for use as passwords or secret keys
 - [uuid](#uuid) - generates a type 4 UUID
@@ -141,14 +142,14 @@ The LAPPS Grid Peristent Identifier Registry. Use this service to lookup the PID
         <td>GET</td>
      </tr>
      <tr>
-        <td><b>URL</b></td>
+        <td valign="top"><b>URL</b></td>
         <td>/lookup?url=:url<br/>
         /lookup?pid=:pid
         </td>
      </tr>
      <tr>
-        <td><b>Returns</b></td>
-        <td valign="top">
+        <td valign="top"><b>Returns</b></td>
+        <td>
             text/plain<br/>
             text/html
         </td>

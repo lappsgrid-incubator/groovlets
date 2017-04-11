@@ -2,10 +2,6 @@ import javax.servlet.http.HttpServletResponse
 
 String method = request.method
 
-if (method == 'POST') {
-    return
-}
-
 if (method == 'GET') {
     String code = params['code']
     switch (code) {

@@ -16,17 +16,18 @@ import javax.servlet.http.HttpServletResponse
 def startJetty() {
     def jetty = new Server(8888)
 
-    // Use a DefaultServlet to serve static content out of /style.  This needs
-    // to be defined before the GroovyServlet since the GroovyServlet redirects '/'
+    // Use a DefaultServlet to serve static content from the /style directory.  The
+    // DefaultServlet needs to be defined before the GroovyServlet since the
+    // GroovyServlet redirects '/'
     def styleContext = new Context(jetty, '/style', Context.SESSIONS)
     styleContext.resourceBase = 'src/main/style'
     styleContext.addServlet(DefaultServlet, '/*')
 
-    def context = new Context(jetty, '/', Context.SESSIONS)  // Allow sessions.
-    context.setInitParams()
+    def context = new Context(jetty, '/', Context.SESSIONS)
     context.resourceBase = 'src/main/groovy'
-    context.addServlet(GroovyServlet, '/*')  // All files will be served.
+    context.addServlet(GroovyServlet, '/*')
     context.addFilter(RedirectFilter, '/', 1)
+    context.addFilter(RedirectFilter, '/services', 1)
     context.addFilter(NotFoundFilter, '/*', 1)
 
     jetty.start()

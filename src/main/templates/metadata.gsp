@@ -6,7 +6,7 @@ html.html {
     body {
         h1 "Service : ${payload.name}"
         table {
-            row 'URL', url
+            simple_row 'URL', url
             row 'Version', payload.version
             row 'Description', payload.description
             row 'Vendor', payload.vendor
