@@ -1,0 +1,65 @@
+/*
+ * Stylesheet compiled from less source.
+ */
+
+@radius: 10px;
+@default-color: #046;
+@table-row-shade: lighten(desaturate(@default-color, 50%), 70%);
+@darker: darken(@default-color, 3%);
+
+.rounded-corners(@r: @radius) {
+  moz-border-radius: @r;
+  webkit-border-radius: @r;
+  border-radius: @r;
+  border-spacing: 0;
+  border: 1px solid @default-color;
+}
+
+html {
+  margin: 0 10%;
+  background-color: @default-color;
+}
+
+body {
+  margin: 0 0;
+  padding: 50px 10%;
+  background-color: white;
+  color: @darker;
+}
+
+h1 h2 h3 h4 h5 h6 {
+  color: @darker;
+}
+
+p {
+  margin: 10px 20px;
+}
+
+.name {
+  width: 15%;
+}
+
+table {
+  .rounded-corners;
+  width: 95%;
+  tr {
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+    &:nth-child(even) { background-color: @table-row-shade; }
+    th, td {
+      text-align: left;
+      padding: 3px 10px;
+    }
+    th {
+      color: white;
+      background-color: @darker;
+      &:first-child { border-top-left-radius: @radius }
+      &:last-child { border-top-right-radius: @radius }
+    }
+    &:last-child {
+      td:first-child { border-bottom-left-radius: @radius }
+      td:last-child { border-bottom-right-radius: @radius }
+    }
+  }
+}
