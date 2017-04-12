@@ -4,8 +4,9 @@ html.html {
         link rel:'stylesheet', href:'/style/main.css'
     }
     body {
-        h1 "Service : ${payload.name}"
+        h1 "Service Metadata"
         table {
+            simple_row 'Name', payload.name
             simple_row 'URL', url
             row 'Version', payload.version
             row 'Description', payload.description
@@ -14,7 +15,7 @@ html.html {
             row 'License', payload.license
         }
         make_table('Requirements', payload.requires)
-        make_table('Output', payload.produces)
+        make_table('Produces', payload.produces)
     }
 }
 
@@ -45,7 +46,7 @@ void simple_row(String name, String value) {
 void row(String name, String value) {
     if (value) {
         html.tr {
-            td(class:'name', name)
+            td(class:'first-column', name)
             if (value.startsWith('http')) {
                 td { a href:value, value }
             }
@@ -69,7 +70,7 @@ void row(String name, List values) {
 
     if (values) {
         html.tr {
-            td(class:'name', name)
+            td(class:'first-column', name)
             td { mkp.yieldUnescaped(values.collect{ link(it) }.join("<br/>")) }
         }
     }

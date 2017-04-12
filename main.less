@@ -3,50 +3,59 @@
  */
 
 @radius: 10px;
-@default-color: #046;
-@table-row-shade: lighten(desaturate(@default-color, 50%), 70%);
-@darker: darken(@default-color, 3%);
+@theme: #046;
+@shade: lighten(desaturate(@theme, 50%), 70%);
+@darker: darken(@theme, 3%);
+@lighter: lighten(@theme, 20%);
 
 .rounded-corners(@r: @radius) {
   moz-border-radius: @r;
   webkit-border-radius: @r;
   border-radius: @r;
   border-spacing: 0;
-  border: 1px solid @default-color;
+  border: 1px solid @theme;
 }
 
 html {
-  margin: 0 10%;
-  background-color: @default-color;
+  /* margin: 0 10%; */
+  background-color: @theme;
 }
 
 body {
-  margin: 0 0;
-  padding: 50px 10%;
+  margin: 0 10%;
+  padding-top: 50px;
+  padding-left: 6%;
   background-color: white;
   color: @darker;
 }
 
-h1 h2 h3 h4 h5 h6 {
-  color: @darker;
+h1, h2, h3, h4, h5, h6 {
+  color: @lighter;
+}
+
+h2 {
+  padding-top: 20px;
+  padding-bottom: 0px;
 }
 
 p {
   margin: 10px 20px;
 }
 
-.name {
+.first-column {
   width: 15%;
 }
 
 table {
   .rounded-corners;
+  margin: 0;
+  padding: 0;
   width: 95%;
   tr {
     padding: 0;
     margin: 0;
     vertical-align: top;
-    &:nth-child(even) { background-color: @table-row-shade; }
+    &:nth-child(even) { background-color: @shade; }
     th, td {
       text-align: left;
       padding: 3px 10px;

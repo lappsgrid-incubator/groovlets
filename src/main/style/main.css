@@ -1,37 +1,71 @@
+/*
+ * Stylesheet compiled from less source.
+ */
 html {
-    margin: 10px 25px;
+  /* margin: 0 10%; */
+  background-color: #046;
 }
-table {
-    width: 90%;
-    margin: 10px 20px;
-    border: 1px solid black;
-    border-radius: 10px;
-    border-spacing: 0px;
-    /* border-collapse: collapse; */
+body {
+  margin: 0 10%;
+  padding-top: 50px;
+  padding-left: 6%;
+  background-color: white;
+  color: #003a57;
 }
-tr {
-    /* vertical-align: top; */
-    padding: 0px;
-    margin: 0px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #0088cc;
 }
-tr:nth-child(even) { background-color: #ddd; }
-tr th:first-child { border-top-left-radius: 10px }
-tr th:last-child { border-top-right-radius: 10px }
-tr:last-child td:first-child { border-bottom-left-radius: 10px }
-tr:last-child td:last-child { border-bottom-right-radius: 10px }
-
-th {
-    color: white;
-    background-color: #333;
-}
-th, td {
-    text-align: left;
-    padding: 3px 10px;
+h2 {
+  padding-top: 20px;
+  padding-bottom: 0px;
 }
 p {
-    margin: 10px 20px;
+  margin: 10px 20px;
 }
-
-.name {
-    width: 15%;
+.first-column {
+  width: 15%;
+}
+table {
+  moz-border-radius: 10px;
+  webkit-border-radius: 10px;
+  border-radius: 10px;
+  border-spacing: 0;
+  border: 1px solid #046;
+  margin: 0;
+  padding: 0;
+  width: 95%;
+}
+table tr {
+  padding: 0;
+  margin: 0;
+  vertical-align: top;
+}
+table tr:nth-child(even) {
+  background-color: #d9eaf2;
+}
+table tr th,
+table tr td {
+  text-align: left;
+  padding: 3px 10px;
+}
+table tr th {
+  color: white;
+  background-color: #003a57;
+}
+table tr th:first-child {
+  border-top-left-radius: 10px;
+}
+table tr th:last-child {
+  border-top-right-radius: 10px;
+}
+table tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
 }
