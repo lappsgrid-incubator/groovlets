@@ -69,3 +69,7 @@ table tr:last-child td:first-child {
 table tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
+.copyright {
+  font-size: smaller;
+  text-align: center;
+}

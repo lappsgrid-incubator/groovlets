@@ -14,7 +14,8 @@ html.html {
             }
             tbody {
                 data.elements.each { e->
-                    String u = "http://api.lappsgrid.org/metadata?id=${e.serviceId}"
+                    //String u = "http://api.lappsgrid.org/metadata?id=${e.serviceId}"
+                    String u = "/metadata?id=${e.serviceId}"
                     String handler = "window.open('$u', '_self')"
                     tr {
                         td e.serviceId
@@ -26,5 +27,7 @@ html.html {
                 }
             }
         }
+        String year = new Date().format('yyyy')
+        p class:'copyright', "Copyright $year The Language Applications Grid."
     }
 }

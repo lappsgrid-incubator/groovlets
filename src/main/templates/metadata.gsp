@@ -16,6 +16,9 @@ html.html {
         }
         make_table('Requirements', payload.requires)
         make_table('Produces', payload.produces)
+
+        String year = new Date().format('yyyy')
+        p class:'copyright', "Copyright $year The Language Applications Grid."
     }
 }
 
