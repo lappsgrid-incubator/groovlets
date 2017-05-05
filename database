@@ -1,3 +1,9 @@
+/*
+ * Use this Groovlet to initialize the database used for the PID registration
+ * service. For security reasons this is not left in the src/main/groovy directory
+ * until needed.
+ */
+
 @GrabConfig(systemClassLoader=true)
 @Grab('com.h2database:h2:1.4.194')
 

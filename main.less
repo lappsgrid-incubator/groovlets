@@ -17,13 +17,13 @@
 }
 
 html {
-  /* margin: 0 10%; */
   background-color: @theme;
 }
 
 body {
   margin: 0 10%;
   padding-top: 50px;
+  padding-bottom: 50px;
   padding-left: 6%;
   background-color: white;
   color: @darker;
@@ -42,6 +42,8 @@ p {
   margin: 10px 20px;
 }
 
+// Used to ensure the width of the first column is the same width for
+// all tables.
 .first-column {
   width: 15%;
 }
@@ -55,7 +57,6 @@ table {
     padding: 0;
     margin: 0;
     vertical-align: top;
-    &:nth-child(even) { background-color: @shade; }
     th, td {
       text-align: left;
       padding: 3px 10px;
@@ -66,6 +67,7 @@ table {
       &:first-child { border-top-left-radius: @radius }
       &:last-child { border-top-right-radius: @radius }
     }
+    &:nth-child(even) { background-color: @shade; }
     &:last-child {
       td:first-child { border-bottom-left-radius: @radius }
       td:last-child { border-bottom-right-radius: @radius }

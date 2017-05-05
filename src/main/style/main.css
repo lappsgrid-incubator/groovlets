@@ -2,12 +2,12 @@
  * Stylesheet compiled from less source.
  */
 html {
-  /* margin: 0 10%; */
   background-color: #046;
 }
 body {
   margin: 0 10%;
   padding-top: 50px;
+  padding-bottom: 50px;
   padding-left: 6%;
   background-color: white;
   color: #003a57;
@@ -45,9 +45,6 @@ table tr {
   margin: 0;
   vertical-align: top;
 }
-table tr:nth-child(even) {
-  background-color: #d9eaf2;
-}
 table tr th,
 table tr td {
   text-align: left;
@@ -62,6 +59,9 @@ table tr th:first-child {
 }
 table tr th:last-child {
   border-top-right-radius: 10px;
+}
+table tr:nth-child(even) {
+  background-color: #d9eaf2;
 }
 table tr:last-child td:first-child {
   border-bottom-left-radius: 10px;
