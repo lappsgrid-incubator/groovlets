@@ -5,32 +5,54 @@ html {
   background-color: #046;
 }
 body {
-  margin: 0 10%;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  padding-left: 6%;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 12pt;
   background-color: white;
   color: #003a57;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+div.header {
+  font-family: Helvetica, Verdana, sans-serif;
+  color: white;
+  background-image: linear-gradient(120deg, #046, #0088cc);
+  text-align: center;
+}
+div.header h1 {
+  padding-top: 3.25rem;
+  font-size: 3.25rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0;
+}
+div.header h2 {
+  font-size: 1.25rem;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 2.25rem;
+}
+div.content {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+div.content h1,
+div.content h2,
+div.content h3,
+div.content h4,
+div.content h5,
+div.content h6 {
   color: #0088cc;
 }
-h2 {
+div.content h2 {
   padding-top: 20px;
   padding-bottom: 0px;
 }
-p {
+div.content p {
   margin: 10px 20px;
 }
-.first-column {
+div.content .first-column {
   width: 15%;
 }
-table {
+div.content table {
   moz-border-radius: 10px;
   webkit-border-radius: 10px;
   border-radius: 10px;
@@ -40,36 +62,36 @@ table {
   padding: 0;
   width: 95%;
 }
-table tr {
+div.content table tr {
   padding: 0;
   margin: 0;
   vertical-align: top;
 }
-table tr th,
-table tr td {
+div.content table tr th,
+div.content table tr td {
   text-align: left;
   padding: 3px 10px;
 }
-table tr th {
+div.content table tr th {
   color: white;
   background-color: #003a57;
 }
-table tr th:first-child {
+div.content table tr th:first-child {
   border-top-left-radius: 10px;
 }
-table tr th:last-child {
+div.content table tr th:last-child {
   border-top-right-radius: 10px;
 }
-table tr:nth-child(even) {
+div.content table tr:nth-child(even) {
   background-color: #d9eaf2;
 }
-table tr:last-child td:first-child {
+div.content table tr:last-child td:first-child {
   border-bottom-left-radius: 10px;
 }
-table tr:last-child td:last-child {
+div.content table tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
-.copyright {
+div.content .copyright {
   font-size: smaller;
   text-align: center;
 }
