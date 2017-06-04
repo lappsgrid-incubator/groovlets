@@ -15,7 +15,7 @@ body {
 div.header {
   font-family: Helvetica, Verdana, sans-serif;
   color: white;
-  background-image: linear-gradient(120deg, #003a57, #d9eaf2);
+  background-image: linear-gradient(120deg, #003a57, #0088cc);
   text-align: center;
 }
 div.header h1 {
