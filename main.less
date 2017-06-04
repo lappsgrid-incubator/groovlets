@@ -1,7 +1,7 @@
 /*
- * Stylesheet compiled from less source.
+ * Stylesheet compiled from the main.less source file.
  */
-
+// The above will be copied into the .css file while this will be ignored.
 @radius: 10px;
 @theme: #046;
 @shade: lighten(desaturate(@theme, 50%), 70%);
@@ -32,7 +32,7 @@ body {
 div.header {
   font-family: Helvetica, Verdana, sans-serif;
   color: white;
-  background-image: linear-gradient(120deg, @theme, @lighter);
+  background-image: linear-gradient(120deg, @darker, @shade);
   text-align: center;
   h1 {
     padding-top: 3.25rem;
@@ -51,6 +51,7 @@ div.header {
 div.content {
   margin-left: 10%;
   margin-right: 10%;
+
   h1, h2, h3, h4, h5, h6 {
     color: @lighter;
   }
@@ -98,8 +99,9 @@ div.content {
   }
 
   .copyright {
+    padding-top: 10px;
+    padding-bottom: 20px;
     font-size: smaller;
     text-align: center;
-
   }
 }

@@ -17,10 +17,14 @@ html.html {
                 row 'Description', payload.description
                 row 'Vendor', payload.vendor
                 row 'Allow', payload.allow
-                row 'License', payload.license
+                /* row 'License', payload.license */
             }
+
             make_table('Requirements', payload.requires)
             make_table('Produces', payload.produces)
+
+            h2 'License'
+            mkp.yieldUnescaped license
 
             String year = new Date().format('yyyy')
             p class:'copyright', "Copyright $year The Language Applications Grid."

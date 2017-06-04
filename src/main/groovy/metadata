@@ -51,6 +51,13 @@ else if (headers.Accept?.contains('text/html')) {
     binding.url = url
     binding.html = html
     binding.payload = data.payload
+    String license = data.payload.license
+    if (license.startsWith('http')) {
+        binding.license = "<p><a href='$license'>$license</a></p>"
+    }
+    else {
+        binding.license = markdown(license)
+    }
     def script = new GroovyShell(binding).parse(new File('src/main/templates/metadata.gsp'))
     script.run()
 }
@@ -61,3 +68,13 @@ else {
     out.println "Please request application/json or text/html"
 }
 return
+
+String markdown(String input) {
+    File file = File.createTempFile('pandoc', '.md')
+    file.text = input
+    String html = "pandoc -f rst -t html ${file.path}".execute().text
+    if (!file.delete()) {
+       file.deleteOnExit()
+    }
+    return html
+}
