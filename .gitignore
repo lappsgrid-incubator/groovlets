@@ -2,3 +2,5 @@ groovlets.log
 *.iml
 *.ipr
 *.iws
+target/
+out/
