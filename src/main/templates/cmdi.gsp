@@ -1,8 +1,8 @@
 /*
  * This following variables will be injected and available for use
  * in the template:
- *  md       : the metadata returned by the service.
- *  serviceId: the ID of the service
+ *  md : the metadata returned by the service
+ *  id : the serviceId of the service
  */
 
 def atts = [
@@ -22,7 +22,7 @@ xml.'cmd:CMD'(atts) {
 	'cmd:Resources' {
 		'cmd:ResourceProxyList' {
 		    'cmd:ResourceProxy' {
-		        id serviceId
+		        id id
 		        'cmd:ResourceType' 'Resource'
 		        'cmd:ResourceRef' {
 		            p 'A reference to the file represented by this &lt;cmd:ResourceProxy>, in the form of a PID or a URL.'

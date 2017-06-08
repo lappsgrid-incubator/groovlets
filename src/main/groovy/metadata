@@ -3,7 +3,8 @@ package src.main.groovy
 @GrabConfig(systemClassLoader=true)
 @Grab('org.lappsgrid:client:2.0.4')
 import org.lappsgrid.client.*
-
+import org.lappsgrid.discriminator.Discriminators
+import org.lappsgrid.serialization.Data
 @Grab('org.lappsgrid:serialization:2.4.0')
 import org.lappsgrid.serialization.Serializer
 
@@ -35,17 +36,25 @@ if (id.startsWith('anc:')) {
     url = "$vassar/invoker/$id"
 }
 
-
 def client = new ServiceClient(url, 'tester', 'tester')
 String json = client.getMetadata();
-if (!headers.Accept || headers.Accept.contains('application/json')) {
+
+Data data = Serializer.parse(json, Data)
+if (data.discriminator == Discriminators.Uri.ERROR) {
+    response.status = 500
+    response.contentType = 'text/plain'
+    out.println data.payload
+    return
+}
+
+if (!headers.Accept || headers.Accept.contains('*/*') || headers.Accept.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println groovy.json.JsonOutput.prettyPrint(json)
     return
 }
 else if (headers.Accept?.contains('text/html')) {
-    def data = Serializer.parse(json, HashMap)
+    //def data = Serializer.parse(json, HashMap)
     // TODO should check for errors here.
     def binding = new Binding()
     binding.url = url
@@ -62,13 +71,13 @@ else if (headers.Accept?.contains('text/html')) {
     script.run()
 }
 else if (headers.Accept.contains('application/x-cmdi+xml')) {
-    def data = Serializer.parse(json, HashMap)
+    //def data = Serializer.parse(json, HashMap)
     // TODO should check for errors here.
     def binding = new Binding()
     binding.url = url
     binding.xml = html
     binding.md = data.payload
-    binding.serviceId = params.id
+    binding.id = params.id
     def script = new GroovyShell(binding).parse(new File('src/main/templates/cmdi.gsp'))
     script.run()
 
@@ -76,7 +85,8 @@ else if (headers.Accept.contains('application/x-cmdi+xml')) {
 else {
     response.status = 406
     response.contentType = 'text/plain'
-    response.addHeader('Accept', 'application/json, text/html')
+    response.addHeader('Sent-Accept', headers.Accept)
+    response.addHeader('Accept', 'application/json, text/html', 'application/x-cmdi+xml')
     out.println "Please request application/json, text/html, or application/x-cmdi+xml"
 }
 return

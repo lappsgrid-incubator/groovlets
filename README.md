@@ -298,7 +298,7 @@ Display metadata about a single service.
      <tr>
         <td><b>Returns</b></td>
         <td>
-            application/json, text/html
+            application/json, text/html, application/x-cmdi+xml
         </td>
      </tr>
 </table>
@@ -313,6 +313,7 @@ If an `Accept` header is not specified `application/json` will be returned.
 
 ```
 curl http://api.lappsgrid.org/metadata?id=anc:gate.tokenzier_2.2.0
+curl -H 'Accept: application/x-cmdi+xml' http://api.lappsgrid.org/metadata?id=anc:stanford.tagger_2.0.0
 ```
 
 <a name="soap-proxy"></a>
