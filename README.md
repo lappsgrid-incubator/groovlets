@@ -13,6 +13,7 @@ The services available at `http://api.lappsgrid.org` are typically proof-of-conc
 - [services](#services) - list all services installed on a particular node
 - [metadata](#metadata) - fetch the metadata for a given service
 - [soap-proxy](#soap-proxy) - RESTful proxy for LAPPS SOAP services
+- [json-compiler](#json-compiler) - Compiles the LAPPS Alternate Syntax into JSON
 
 # Available Services
 
@@ -401,3 +402,6 @@ Connection: keep-alive
 
 The *username* and *password* are the user's credentials on the Service Manager instance where the servcie resides.  If either is omitted the default value *tester* will be used.
 
+<a name="json-compiler"></a>
+  
+## http://api.lappsgrid.org/json-compiler
