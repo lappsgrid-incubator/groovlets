@@ -405,3 +405,45 @@ The *username* and *password* are the user's credentials on the Service Manager 
 <a name="json-compiler"></a>
   
 ## http://api.lappsgrid.org/json-compiler
+
+Compiles the [LAPPS Alternative Syntax](https://github.com/oanc/org.anc.json.schema-compiler)
+into an equivalent JSON document.
+
+<table>
+    <tr>
+        <td style="width:20%"><b>Methods</b></td>
+        <td>POST</td>
+     </tr>
+     <tr>
+        <td><b>URL</b></td>
+        <td>/json-compiler</td>
+     </tr>
+     <tr>
+        <td><b>Accepts</b></td>
+        <td>text/plain</td>
+     </tr>
+     <tr>
+        <td><b>Returns</b></td>
+        <td>
+            application/json
+        </td>
+     </tr>
+</table>
+
+```
+> curl -i -X POST -H "Content-type: text/plain" --data "type object; properties { name string }" http://api.lappsgrid.org/json-compiler
+
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Date: Sun, 18 Jun 2017 18:30:18 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+{
+    "type": "object",
+    "properties": {
+        "name": "string"
+    }
+}
+```
