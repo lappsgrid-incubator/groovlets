@@ -78,6 +78,8 @@ def push = new JsonSlurper().parseText(body)
 if (push.ref != 'refs/heads/master') {
 	log("Pushed to non-master branch ${push.ref}")
 	response.status = 200
+	//response.addHeader("Branch-Pushed", push.ref)
+    out.println "Pushed to non-master branch ${push.ref}"
 	return
 }
 
