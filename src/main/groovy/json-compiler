@@ -1,4 +1,4 @@
-@Grab("org.anc.json:compiler:1.2.2-SNAPSHOT")
+@Grab("org.anc.json:compiler:1.2.1")
 import org.anc.json.compiler.SchemaCompiler
 import org.anc.json.compiler.SchemaException
 
