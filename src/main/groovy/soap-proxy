@@ -1,11 +1,15 @@
 package src.main.groovy
 
+import groovy.util.logging.Slf4j
+
 @GrabConfig(systemClassLoader=true)
 @Grab('org.lappsgrid:client:2.0.4')
 import org.lappsgrid.client.*
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+@Grab('org.slf4j:slf4j-simple:1.7.25')
+import org.slf4j.Logger
 
 import javax.servlet.http.HttpServletResponse
 
@@ -28,38 +32,60 @@ if (request.contentType != 'application/json') {
     return
 }
 
-Map headers = request.headers
-String url = headers.url
-String username = headers.username
-String password = headers.password
-
 def parser = new JsonSlurper()
-Map input = (Map) parser.parse(request.inputStream)
+String text = request.inputStream.text
+Map input = parser.parseText(text)
+String data = text
+String username = 'tester'
+String password = 'tester'
+
+// If the proxy is specified in the header then all the parameters should be
+// specifiedin headers and the input stream should just contain the JSON for
+// the Data object.  Otherwise the incoming JSON object should contain all
+// parameters with the Data object stored in a 'data' field.
+String url = headers['SOAP-PROXY-URL']
 if (url == null) {
     if (input.url == null) {
         response.status = HttpServletResponse.SC_BAD_REQUEST
         out.println "No service URL provided."
+        error "No service URL provided."
         return
     }
     url = input.url
+    username = input.username ?: username
+    password = input.password ?: password
+    data = new JsonBuilder(input.data).toString()
 }
-if (input.data == null) {
-    response.status = HttpServletResponse.SC_BAD_REQUEST
-    out.println "No data proviced."
-    return
-}
-
-if (username == null) {
-    username = input.username ?: 'tester'
-}
-if (password == null) {
-    password = input.password ?: 'tester'
+else {
+    username = headers['SOAP-PROXY-USERNAME'] ?: username
+    password = headers['SOAP-PROXY-PASSWORD'] ?: password
 }
 
-ServiceClient client = new ServiceClient(input.url, username, password)
-String json = client.execute(new JsonBuilder(input.data).toString())
+debug("Url: $url")
+debug("Calling remote service")
+ServiceClient client = new ServiceClient(url, username, password)
+String json = client.execute(data)
 response.status = 200
 response.contentType = 'application/json'
-
+debug("Returning JSON document")
 out.println groovy.json.JsonOutput.prettyPrint(json)
+return
 
+void debug(String message) {
+    Log.logger.debug(message)
+}
+void log(String message) {
+    Log.logger.info(message)
+}
+void warn(String message) {
+    Log.logger.warn(message)
+}
+void error(String message) {
+    Log.logger.error(message)
+}
+@Slf4j('log')
+class Log {
+    static Logger getLogger() {
+        return log
+    }
+}

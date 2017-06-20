@@ -1,0 +1,8 @@
+#!/usr/bin/env lsd
+
+Data data = new Data()
+data.discriminator = Uri.TEXT
+data.payload = "Karen flew to New York."
+print data.asPrettyJson()
+println()
+
