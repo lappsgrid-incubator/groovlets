@@ -20,6 +20,7 @@ void log(String message) {
 String sign(String msg) {
 	String secret = System.env['GITHUB_SECRET']
 	if (!secret) {
+        log "GITHUB_SECRET has not been set."
 		return "Secret unavailable"
 	}
 	try {
@@ -56,12 +57,14 @@ String body = request.inputStream.text
 if (!body) {
 	log "Empty body"
 	response.status = 400 // Bad request
+    out.println "Empty body"
 	return
 }
 
 // Check the signature.
 String expected = headers['X-Hub-Signature']
 if (!expected) {
+    log "Missing signature."
 	out.println "Missing signature."
 	response.status = 400
 	return
@@ -69,6 +72,7 @@ if (!expected) {
 String signature = sign(body)
 if (!MessageDigest.isEqual(signature.bytes, expected.bytes)) {
 	out.println "Invalid signature."
+    log "Invalid signature."
 	response.status = 403
 	return
 }
@@ -98,6 +102,7 @@ if (repo) {
 	buffer << "/var/lib/downloads/scripts/pull.sh $repo".execute().text
 	out.println buffer.toString()
 	response.status = 200
+    log "Pushed to ${name}."
 }
 else {
 	log("Pushed to unsupported repository $name")
