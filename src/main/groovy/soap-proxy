@@ -31,6 +31,7 @@ if (request.method != 'POST') {
 
 String text = request.inputStream.text
 if (request.contentType == 'text/plain') {
+    log "Wrapping plain text in a Data object."
     Map data = [
             discriminator: 'http://vocab.lappsgrid.org/ns/media/text',
             payload: text
