@@ -47,13 +47,13 @@ if (data.discriminator == Discriminators.Uri.ERROR) {
     return
 }
 
-if (!headers.Accept || headers.Accept.contains('*/*') || headers.Accept.contains('application/json')) {
+if (!headers.Accept || headers.Accept.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println groovy.json.JsonOutput.prettyPrint(json)
     return
 }
-else if (headers.Accept?.contains('text/html')) {
+else if (headers.Accept.contains('text/html') || headers.Accept.contains('*/*')) {
     //def data = Serializer.parse(json, HashMap)
     // TODO should check for errors here.
     def binding = new Binding()
