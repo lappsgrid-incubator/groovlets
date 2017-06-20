@@ -28,12 +28,20 @@ if (request.contentType != 'application/json') {
     return
 }
 
+Map headers = request.headers
+String url = headers.url
+String username = headers.username
+String password = headers.password
+
 def parser = new JsonSlurper()
 Map input = (Map) parser.parse(request.inputStream)
-if (input.url == null) {
-    response.status = HttpServletResponse.SC_BAD_REQUEST
-    out.println "No service URL provided."
-    return
+if (url == null) {
+    if (input.url == null) {
+        response.status = HttpServletResponse.SC_BAD_REQUEST
+        out.println "No service URL provided."
+        return
+    }
+    url = input.url
 }
 if (input.data == null) {
     response.status = HttpServletResponse.SC_BAD_REQUEST
@@ -41,8 +49,12 @@ if (input.data == null) {
     return
 }
 
-String username = input.username ?: 'tester'
-String password = input.password ?: 'tester'
+if (username == null) {
+    username = input.username ?: 'tester'
+}
+if (password == null) {
+    password = input.password ?: 'tester'
+}
 
 ServiceClient client = new ServiceClient(input.url, username, password)
 String json = client.execute(new JsonBuilder(input.data).toString())
