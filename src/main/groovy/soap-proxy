@@ -6,7 +6,6 @@ import groovy.util.logging.Slf4j
 @Grab('org.lappsgrid:client:2.0.4')
 import org.lappsgrid.client.*
 
-import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 @Grab('ch.qos.logback:logback-classic:1.2.3')
 @Grab('org.slf4j:slf4j-simple:1.7.25')
@@ -14,6 +13,7 @@ import org.slf4j.Logger
 
 import javax.servlet.http.HttpServletResponse
 
+log("Servicing request.")
 if (request.method == 'OPTIONS') {
     response.status = 200
     response.addHeader('Allow', 'POST')
@@ -24,12 +24,14 @@ if (request.method == 'OPTIONS') {
 if (request.method != 'POST') {
     response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
     response.addHeader('Allow', 'POST')
+    warn "Not a POST"
     return
 }
 
 if (request.contentType != 'application/json') {
     response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
     response.addHeader('Accept', 'application/json')
+    warn "Unsupported media type ${request.contentType}"
     return
 }
 
@@ -56,24 +58,24 @@ if (url == null) {
         error "No service URL provided."
         return
     }
+    log "Using parameters specified in the JSON"
     url = input.parameters.url
     username = input.parameters.username ?: username
     password = input.parameters.password ?: password
 //    data = new JsonBuilder(input.data).toString()
 }
 else {
+    log "Using parametres from the HTTP headers."
     username = headers['LAPPS-PROXY-USERNAME'] ?: username
     password = headers['LAPPS-PROXY-PASSWORD'] ?: password
 }
-
-debug("Url: $url")
-debug("Calling remote service")
+log "Proxying ${url}"
 ServiceClient client = new ServiceClient(url, username, password)
 String json = client.execute(text)
 response.status = 200
 response.contentType = 'application/json'
-debug("Returning JSON document")
 out.println groovy.json.JsonOutput.prettyPrint(json)
+log "Request serviced."
 return
 
 void debug(String message) {
