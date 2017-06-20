@@ -8,6 +8,7 @@ import org.lappsgrid.client.*
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+@Grab('ch.qos.logback:logback-classic:1.2.3')
 @Grab('org.slf4j:slf4j-simple:1.7.25')
 import org.slf4j.Logger
 
@@ -35,7 +36,6 @@ if (request.contentType != 'application/json') {
 def parser = new JsonSlurper()
 String text = request.inputStream.text
 Map input = parser.parseText(text)
-String data = text
 String username = 'tester'
 String password = 'tester'
 
@@ -43,28 +43,33 @@ String password = 'tester'
 // specifiedin headers and the input stream should just contain the JSON for
 // the Data object.  Otherwise the incoming JSON object should contain all
 // parameters with the Data object stored in a 'data' field.
-String url = headers['SOAP-PROXY-URL']
+String url = headers['LAPPS-PROXY-URL']
 if (url == null) {
-    if (input.url == null) {
+    if (input.parameters == null) {
+        response.status = 400
+        out.println "No LAPPS-PROXY header and no parameters found in the LIF object."
+        return
+    }
+    if (input.parameters.url == null) {
         response.status = HttpServletResponse.SC_BAD_REQUEST
         out.println "No service URL provided."
         error "No service URL provided."
         return
     }
-    url = input.url
-    username = input.username ?: username
-    password = input.password ?: password
-    data = new JsonBuilder(input.data).toString()
+    url = input.parameters.url
+    username = input.parameters.username ?: username
+    password = input.parameters.password ?: password
+//    data = new JsonBuilder(input.data).toString()
 }
 else {
-    username = headers['SOAP-PROXY-USERNAME'] ?: username
-    password = headers['SOAP-PROXY-PASSWORD'] ?: password
+    username = headers['LAPPS-PROXY-USERNAME'] ?: username
+    password = headers['LAPPS-PROXY-PASSWORD'] ?: password
 }
 
 debug("Url: $url")
 debug("Calling remote service")
 ServiceClient client = new ServiceClient(url, username, password)
-String json = client.execute(data)
+String json = client.execute(text)
 response.status = 200
 response.contentType = 'application/json'
 debug("Returning JSON document")
