@@ -18,7 +18,7 @@ log("Servicing request.")
 if (request.method == 'OPTIONS') {
     response.status = 200
     response.addHeader('Allow', 'POST')
-    response.addHeader('Accept', 'application/json')
+    response.addHeader('Accept', 'application/json, text/plain')
     return
 }
 
@@ -40,7 +40,7 @@ if (request.contentType == 'text/plain') {
 }
 else if (request.contentType != 'application/json') {
     response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
-    response.addHeader('Accept', 'application/json')
+    response.addHeader('Accept', 'application/json, text/plain')
     warn "Unsupported media type ${request.contentType}"
     return
 }

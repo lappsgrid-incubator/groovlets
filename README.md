@@ -334,7 +334,7 @@ A RESTful proxy service for LAPPS Grid SOAP services.
      </tr>
      <tr>
         <td><b>Accepts</b></td>
-        <td>application/json</td>
+        <td>application/json<br/>text/plain</td>
      </tr>
      <tr>
         <td><b>Returns</b></td>
@@ -344,17 +344,37 @@ A RESTful proxy service for LAPPS Grid SOAP services.
      </tr>
 </table>
 
+**HTTP Headers**
+
+<table>
+    <tr>
+        <td style="width:20%"><b>LAPPS-PROXY-URL</b></td>
+        <td>The URL of the SOAP service to be invoked</td>
+     </tr>
+     <tr>
+        <td><b>LAPPS-PROXY-USERNAME</b></td>
+        <td>The service manager username (optional)</td>
+     </tr>
+     <tr>
+        <td><b>LAPPS-PROXY-PASSWORD</b></td>
+        <td>the service manager password for the user specified above (optional)</td>
+     </tr>
+</table>
+
+
 **Data Format**
+
+If `application/json` is POSTed to the service then the JSON should represent a LAPPS [Data](http://wiki.lappsgrid.org/org.lappsgrid.serialization/groovydoc/org/lappsgrid/serialization/Data.html) object.  The service URL, username and password can either be specified in the `parameters` field of the Data object or via HTTP headers.  If the service URL is specified as a header then the username and password, if provided, must also be specified as headers.  If the parameters appear in the JSON an are specified as HTTP headers then the HTTP headers take precedence. 
 
 ```
 {
-    url: [string],
-    username: [string] (optional),
-    password: [string] (optional),
-    data: {
-        discriminator: [URI],
-        payload: [string]
+    parameters {
+        url: [string],
+        username: [string] (optional),
+        password: [string] (optional),
     }
+    discriminator: [URI],
+    payload: [string]
 }
 
 ```
@@ -364,13 +384,13 @@ Assume *data.json* contains the following:
 
 ```
 {
-    "url": "http://vassar.lappsgrid.org/invoker/anc:stanford.tokenizer_2.0.0",
-    "username": "john_doe",
-    "password": "s3cr3t",
-    "data": {
-        "discriminator": "http://vocab.lappsgrid.org/ns/media/text",
-        "payload": "Karen flew to New York."
-    }
+    "parameters": {
+        "url": "http://vassar.lappsgrid.org/invoker/anc:stanford.tokenizer_2.0.0",
+        "username": "john_doe",
+        "password": "s3cr3t"
+    },
+    "discriminator": "http://vocab.lappsgrid.org/ns/media/text",
+    "payload": "Karen flew to New York."
 }
 ```
 
@@ -398,6 +418,11 @@ Connection: keep-alive
 }
 ```
 
+Plain text can also be POSTed to services that accept http://vocab.lappsgrid.org/ns/media/text, which is mostly the tokenizers.
+
+```bash
+curl -i -X POST -H 'Content-Type: text/plain' -H "LAPPS-PROXY-URL: http://vocab.lappsgrid.org/invoker/anc:stanford.tokenzier_2.0.0" -d "Karen flew to New York." http://api.lappsgrid.org/soap-proxy
+```
 **Notes**
 
 The *username* and *password* are the user's credentials on the Service Manager instance where the servcie resides.  If either is omitted the default value *tester* will be used.
