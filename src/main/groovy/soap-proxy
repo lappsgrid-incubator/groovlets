@@ -1,5 +1,6 @@
 package src.main.groovy
 
+import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 
 @GrabConfig(systemClassLoader=true)
@@ -28,7 +29,15 @@ if (request.method != 'POST') {
     return
 }
 
-if (request.contentType != 'application/json') {
+String text = request.inputStream.text
+if (request.contentType == 'text/plain') {
+    Map data = [
+            discriminator: 'http://vocab.lappsgrid.org/ns/media/text',
+            payload: text
+    ]
+    text = new JsonBuilder(data).toPrettyString()
+}
+else if (request.contentType != 'application/json') {
     response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
     response.addHeader('Accept', 'application/json')
     warn "Unsupported media type ${request.contentType}"
@@ -36,7 +45,6 @@ if (request.contentType != 'application/json') {
 }
 
 def parser = new JsonSlurper()
-String text = request.inputStream.text
 Map input = parser.parseText(text)
 String username = 'tester'
 String password = 'tester'
