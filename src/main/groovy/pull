@@ -98,7 +98,7 @@ String name = push.repository.name
 String repo = repos[name]
 if (repo) {
 	StringBuilder buffer = new StringBuilder()
-	buffer << "Push to repository ${name}\n"
+	buffer << "Push to ${name} master\n"
 	buffer << "/var/lib/downloads/scripts/pull.sh $repo".execute().text
     String message = buffer.toString()
 	out.println message
