@@ -421,8 +421,9 @@ Connection: keep-alive
 Plain text can also be POSTed to services that accept http://vocab.lappsgrid.org/ns/media/text, which is mostly the tokenizers.
 
 ```bash
-curl -i -X POST -H 'Content-Type: text/plain' -H "LAPPS-PROXY-URL: http://vocab.lappsgrid.org/invoker/anc:stanford.tokenzier_2.0.0" -d "Karen flew to New York." http://api.lappsgrid.org/soap-proxy
+curl -i -X POST -H "Content-type: text/plain" -H "LAPPS-PROXY-URL: http://vassar.lappsgrid.org/invoker/anc:stanford.tokenizer_2.0.0" -d "Karen flew to New York." http://localhost:8888/soap-proxy
 ```
+
 **Notes**
 
 The *username* and *password* are the user's credentials on the Service Manager instance where the servcie resides.  If either is omitted the default value *tester* will be used.
