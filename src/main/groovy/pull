@@ -100,9 +100,10 @@ if (repo) {
 	StringBuilder buffer = new StringBuilder()
 	buffer << "Push to repository ${name}\n"
 	buffer << "/var/lib/downloads/scripts/pull.sh $repo".execute().text
-	out.println buffer.toString()
+    String message = buffer.toString()
+	out.println message
 	response.status = 200
-    log "Pushed to ${name}."
+    log message
 }
 else {
 	log("Pushed to unsupported repository $name")
