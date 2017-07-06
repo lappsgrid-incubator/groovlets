@@ -29,55 +29,23 @@ if (request.method != 'POST') {
     return
 }
 
-String text = request.inputStream.text
-if (request.contentType == 'text/plain') {
-    log "Wrapping plain text in a Data object."
-    Map data = [
-            discriminator: 'http://vocab.lappsgrid.org/ns/media/text',
-            payload: text
-    ]
-    text = new JsonBuilder(data).toPrettyString()
-}
-else if (request.contentType != 'application/json') {
-    response.status = HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE
-    response.addHeader('Accept', 'application/json, text/plain')
-    warn "Unsupported media type ${request.contentType}"
+if (params.id == null) {
+    response.status = 400
+    out.println "No service ID provided."
     return
 }
 
-def parser = new JsonSlurper()
-Map input = parser.parseText(text)
+String url = 'http://eldrad.cs-i.brandeis.edu:8080/service_manager/invoker/'
+if (params.id.startsWith("anc:")) {
+    url = 'http://vassar.lappsgrid.org/invoker/'
+}
+url += params.id
+
+String text = request.inputStream.text
 String username = 'tester'
 String password = 'tester'
 
-// If the proxy is specified in the header then all the parameters should be
-// specifiedin headers and the input stream should just contain the JSON for
-// the Data object.  Otherwise the incoming JSON object should contain all
-// parameters with the Data object stored in a 'data' field.
-String url = headers['LAPPS-PROXY-URL']
-if (url == null) {
-    if (input.parameters == null) {
-        response.status = 400
-        out.println "No LAPPS-PROXY header and no parameters found in the LIF object."
-        return
-    }
-    if (input.parameters.url == null) {
-        response.status = HttpServletResponse.SC_BAD_REQUEST
-        out.println "No service URL provided."
-        error "No service URL provided."
-        return
-    }
-    log "Using parameters specified in the JSON"
-    url = input.parameters.url
-    username = input.parameters.username ?: username
-    password = input.parameters.password ?: password
-//    data = new JsonBuilder(input.data).toString()
-}
-else {
-    log "Using parametres from the HTTP headers."
-    username = headers['LAPPS-PROXY-USERNAME'] ?: username
-    password = headers['LAPPS-PROXY-PASSWORD'] ?: password
-}
+
 log "Proxying ${url}"
 ServiceClient client = new ServiceClient(url, username, password)
 String json = client.execute(text)
