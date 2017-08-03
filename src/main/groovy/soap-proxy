@@ -25,6 +25,7 @@ if (request.method == 'OPTIONS') {
 if (request.method != 'POST') {
     response.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
     response.addHeader('Allow', 'POST')
+    out.println "Method ${request.method} not allowed. Please send a POST request."
     warn "Not a POST"
     return
 }
@@ -53,6 +54,7 @@ String password = 'tester'
 
 
 log "Proxying ${url}"
+
 ServiceClient client = new ServiceClient(url, username, password)
 String json = client.execute(text)
 response.status = 200
