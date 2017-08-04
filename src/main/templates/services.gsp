@@ -1,6 +1,6 @@
 html.html {
     head {
-        title data.title
+        title "${data.node} Services"
         link rel:'stylesheet', href:'/style/main.css'
     }
     body {
@@ -9,7 +9,7 @@ html.html {
             h2 'An open framework for interoperable NLP web services'
         }
         div(class:'content') {
-            h1 data.heading
+            h1 "LAPPS services on the ${data.node} node"
             p "Total Services Registered: ${data.totalCount}"
             table {
                 thead {

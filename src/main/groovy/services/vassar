@@ -1,21 +1,22 @@
-@GrabConfig(systemClassLoader=true)
-@Grab("net.servicegrid:jp.go.nict.langrid.client:1.0.5")
-import jp.go.nict.langrid.client.RequestAttributes
-@Grab("net.servicegrid:jp.go.nict.langrid.client.soap:1.0.5")
-import jp.go.nict.langrid.client.soap.SoapClientFactory
-@Grab('org.langrid:jp.go.nict.langrid.service.management_1_2:1.0.10')
-import jp.go.nict.langrid.service_1_2.foundation.MatchingCondition
-import jp.go.nict.langrid.service_1_2.foundation.Order
-import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceEntrySearchResult
-import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceManagementService
+import src.main._private.ServiceHandler
+//@GrabConfig(systemClassLoader=true)
+//@Grab("net.servicegrid:jp.go.nict.langrid.client:1.0.5")
+//import jp.go.nict.langrid.client.RequestAttributes
+//@Grab("net.servicegrid:jp.go.nict.langrid.client.soap:1.0.5")
+//import jp.go.nict.langrid.client.soap.SoapClientFactory
+//@Grab('org.langrid:jp.go.nict.langrid.service.management_1_2:1.0.10')
+//import jp.go.nict.langrid.service_1_2.foundation.MatchingCondition
+//import jp.go.nict.langrid.service_1_2.foundation.Order
+//import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceEntrySearchResult
+//import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceManagementService
 
 import javax.servlet.http.HttpServletResponse
 
 String method = request.method
-String url = 'http://vassar.lappsgrid.org'
 
-String username = System.getenv('SERVICE_MANAGER_USERNAME')
-String password = System.getenv('SERVICE_MANAGER_PASSWORD')
+username = System.getenv('SERVICE_MANAGER_USERNAME')
+password = System.getenv('SERVICE_MANAGER_PASSWORD')
+node = 'Vassar'
 
 if (!username || !password) {
     response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
@@ -29,6 +30,14 @@ if (method != 'GET') {
     return
 }
 
+ServiceHandler handler = new ServiceHandler(this)
+handler.url = 'http://vassar.lappsgrid.org'
+handler.username = username
+handler.password = password
+handler.node = 'Vassar'
+handler.handle() //params, headers, out, response, html)
+
+/*
 def conditions = new MatchingCondition[params.size()]
 int i = 0
 params.each { name,value ->
@@ -64,7 +73,7 @@ while (more.elements.length > 0) {
     more = s.searchServices(count, PAGE_SIZE, conditions, order, "ALL")
 }
 result.totalCount = count
-if (headers.Accept == '*/*' || headers.Accept?.contains('application/json')) {
+if (headers.Accept == '*\/*' || headers.Accept?.contains('application/json')) {
     response.status = 200
     response.contentType = 'application/json'
     out.println new groovy.json.JsonBuilder(result).toPrettyString()
@@ -87,3 +96,4 @@ else {
     out.println "Sent Accept: ${headers.Accept}"
 }
 
+*/

@@ -27,7 +27,7 @@ def startJetty() {
     context.resourceBase = 'src/main/groovy'
     context.addServlet(GroovyServlet, '/*')
     context.addFilter(RedirectFilter, '/', 1)
-    context.addFilter(RedirectFilter, '/services', 1)
+    context.addFilter(ServicesFilter, '/services', 1)
     context.addFilter(NotFoundFilter, '/*', 1)
 
     jetty.start()
@@ -39,6 +39,7 @@ return
 
 /** Redirect everything to the /info page. */
 class RedirectFilter implements Filter {
+
     @Override
     void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
 
@@ -46,6 +47,22 @@ class RedirectFilter implements Filter {
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) servletResponse
         response.sendRedirect('http://api.lappsgrid.org/info')
+    }
+
+    @Override
+    void destroy() { /* NOP */ }
+}
+
+class ServicesFilter implements Filter {
+
+    @Override
+    void init(FilterConfig filterConfig) throws ServletException { /* NOP */ }
+
+    @Override
+    void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) servletResponse
+//        response.sendRedirect('http://api.lappsgrid.org/services/index')
+        response.sendRedirect('http://localhost:8888/services/index')
     }
 
     @Override
