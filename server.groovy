@@ -62,7 +62,7 @@ class ServicesFilter implements Filter {
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) servletResponse
 //        response.sendRedirect('http://api.lappsgrid.org/services/index')
-        response.sendRedirect('http://localhost:8888/services/index')
+        response.sendRedirect('http://api.lappsgrid.org/services/index')
     }
 
     @Override
