@@ -54,6 +54,7 @@ String password = 'tester'
 
 
 log "Proxying ${url}"
+log("Text is ${text}")
 
 ServiceClient client = new ServiceClient(url, username, password)
 String json = client.execute(text)

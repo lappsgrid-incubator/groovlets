@@ -6,7 +6,7 @@ html.html {
     body {
         div(class:'header') {
             h1 'The Language Applications Grid'
-            h2 'An open framework for interoperable web services'
+            h2 'An open framework for interoperable NLP web services'
         }
         div(class:'content') {
             h1 data.heading
