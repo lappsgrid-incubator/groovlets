@@ -30,8 +30,8 @@ def startJetty() {
     def context = new Context(jetty, '/', Context.SESSIONS)
     context.resourceBase = 'src/main/groovy'
     context.addServlet(GroovyServlet, '/*')
-    context.addFilter(RedirectFilter, '/', 1)
     context.addFilter(ServicesFilter, '/services', 1)
+    context.addFilter(RedirectFilter, '/', 1)
     context.addFilter(NotFoundFilter, '/*', 1)
 
     jetty.start()
