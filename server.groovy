@@ -32,7 +32,7 @@ def startJetty() {
     context.addServlet(GroovyServlet, '/*')
     context.addFilter(RedirectFilter, '/', 1)
     context.addFilter(ServicesFilter, '/services', 1)
-//    context.addFilter(NotFoundFilter, '/*', 1)
+    context.addFilter(NotFoundFilter, '/*', 1)
 
     jetty.start()
 }
@@ -42,7 +42,6 @@ startJetty()
 return
 
 /** Redirect everything to the /info page. */
-@Slf4j("logger")
 class RedirectFilter implements Filter {
 
     @Override
@@ -51,7 +50,6 @@ class RedirectFilter implements Filter {
     @Override
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest
-        logger.info("RedirectFilter redirecting to /info")
         HttpServletResponse response = (HttpServletResponse) servletResponse
         response.sendRedirect('http://api.lappsgrid.org/info')
     }
@@ -60,7 +58,6 @@ class RedirectFilter implements Filter {
     void destroy() { /* NOP */ }
 }
 
-@Slf4j("logger")
 class ServicesFilter implements Filter {
 
     @Override
@@ -68,9 +65,7 @@ class ServicesFilter implements Filter {
 
     @Override
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-        logger.info("ServicesFilter redirecting to /services/index")
         HttpServletResponse response = (HttpServletResponse) servletResponse
-//        response.sendRedirect('http://api.lappsgrid.org/services/index')
         response.sendRedirect('http://api.lappsgrid.org/services/index')
     }
 
@@ -82,7 +77,6 @@ class ServicesFilter implements Filter {
  * Return a 404 for matching paths. This is used to block access to some items in the
  * resourceBase that we do not want served as Groovlets.
  */
-@Slf4j("logger")
 class NotFoundFilter implements Filter {
 
     @Override
@@ -91,13 +85,10 @@ class NotFoundFilter implements Filter {
     @Override
     void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest
-        logger.info("NotFoundFilter for {}", request.pathInfo)
         if (accept(request.pathInfo)) {
-            logger.info("Path accepted")
             chain.doFilter(servletRequest, servletResponse)
         }
         else {
-            logger.warn("Sending a 404")
             HttpServletResponse response = (HttpServletResponse) servletResponse
             response.sendError(404)
         }
