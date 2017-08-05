@@ -1,4 +1,5 @@
 import src.main._private.ServiceHandler
+
 //@GrabConfig(systemClassLoader=true)
 //@Grab("net.servicegrid:jp.go.nict.langrid.client:1.0.5")
 //import jp.go.nict.langrid.client.RequestAttributes
@@ -13,10 +14,9 @@ import src.main._private.ServiceHandler
 import javax.servlet.http.HttpServletResponse
 
 String method = request.method
-
-username = System.getenv('SERVICE_MANAGER_USERNAME')
-password = System.getenv('SERVICE_MANAGER_PASSWORD')
-node = 'Vassar'
+String url = 'http://vassar.lappsgrid.org'
+String username = System.getenv('SERVICE_MANAGER_USERNAME')
+String password = System.getenv('SERVICE_MANAGER_PASSWORD')
 
 if (!username || !password) {
     response.status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR
@@ -30,12 +30,16 @@ if (method != 'GET') {
     return
 }
 
+//Logger logger = LoggerFactory.getLogger()
+//logger.info("Getting Vassar services")
 ServiceHandler handler = new ServiceHandler(this)
 handler.url = 'http://vassar.lappsgrid.org'
 handler.username = username
 handler.password = password
 handler.node = 'Vassar'
+//logger.debug("Invoking handler")
 handler.handle() //params, headers, out, response, html)
+
 
 /*
 def conditions = new MatchingCondition[params.size()]
@@ -80,8 +84,9 @@ if (headers.Accept == '*\/*' || headers.Accept?.contains('application/json')) {
 }
 else if (headers.Accept?.contains('text/html')) {
     File template = new File('src/main/templates/services.gsp')
-    result.title = 'Vassar Services'
-    result.heading = "LAPPS Services on the Vassar node"
+    //result.title = 'Vassar Services'
+    //result.heading = "LAPPS Services on the Vassar node"
+    result.node = 'Vassar'
     Binding binding = new Binding()
     binding.html = html
     binding.data = result
