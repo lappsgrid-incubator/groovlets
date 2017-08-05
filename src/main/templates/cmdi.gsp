@@ -1,5 +1,5 @@
 /*
- * This following variables will be injected and available for use
+ * Th efollowing variables will be injected and available for use
  * in the template:
  *  md : the metadata returned by the service
  *  id : the serviceId of the service
