@@ -1,7 +1,14 @@
 package src.main.groovy
 
+@Grab('ch.qos.logback:logback-classic:1.2.3')
+@Grab('org.slf4j:slf4j-simple:1.7.25')
+import org.slf4j.Logger
+import src.main.library.LoggerFactory
+
 def method = request.method
- 
+
+Logger logger = LoggerFactory.getLogger('info')
+logger.info("Generating info")
 html.html {
     head {
         title 'LAPPS Grid HTTP API'

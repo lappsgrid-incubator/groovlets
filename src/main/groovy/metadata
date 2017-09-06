@@ -86,7 +86,7 @@ else {
     response.status = 406
     response.contentType = 'text/plain'
     response.addHeader('Sent-Accept', headers.Accept)
-    response.addHeader('Accept', 'application/json, text/html', 'application/x-cmdi+xml')
+    response.addHeader('Accept', 'application/json, text/html, application/x-cmdi+xml')
     out.println "Please request application/json, text/html, or application/x-cmdi+xml"
 }
 return

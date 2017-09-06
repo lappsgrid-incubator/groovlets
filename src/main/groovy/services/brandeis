@@ -1,4 +1,4 @@
-import src.main._private.ServiceHandler
+import src.main.library.ServiceHandler
 import javax.servlet.http.HttpServletResponse
 
 String method = request.method

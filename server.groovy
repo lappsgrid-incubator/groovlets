@@ -3,10 +3,12 @@
 @Grab('org.slf4j:slf4j-simple:1.7.25')
 import groovy.util.logging.Slf4j
 @Grab(group='org.mortbay.jetty', module='jetty-embedded', version='6.1.26')
-import org.mortbay.jetty.Server
-import org.mortbay.jetty.handler.ResourceHandler
+//import org.mortbay.jetty.Server
+//import org.mortbay.jetty.handler.ResourceHandler
 import org.mortbay.jetty.servlet.*
 import groovy.servlet.*
+import org.mortbay.jetty.Server
+//import org.mortbay.jetty.servlet.Context
 
 import javax.servlet.Filter
 import javax.servlet.FilterChain
