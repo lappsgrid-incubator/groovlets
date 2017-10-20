@@ -20,8 +20,8 @@ html.html {
             h2 'An open framework for interoperable web services'
         }
         div(class:'content') {
-            h1 'LAPPS Grid HTTP API'
-            p 'The following services are available via http://api.lappsgrid.org'
+            h1 'LAPPS Grid Pull Service'
+            p 'The only service remaining here is the /pull service used to update certain directories on the proxy server.  See https://api.lappsgrid.org/info for the new api services.'
             table {
                 tr {
                     th width:'15%', 'Path'
@@ -36,37 +36,8 @@ html.html {
                     td 'Dummy service for testing REST client status code handing'
                 }
                 tr {
-                    td '/password'
-                    td 'Use to generate secure passwords or keys programmatically.'
-                }
-                tr {
-                    td '/uuid'
-                    td 'Generates Type 4 UUID values'
-                }
-                tr {
-                    td '/services/:node'
-                    td 'List services registered to a Service Manager instance.'
-                }
-                tr {
                     td '/info'
                     td 'Displays this information page.'
-                }
-                tr {
-                    td valign:'top', '/lookup'
-                    td 'Look up the PID assigned to LAPPS services or the service that corresponds to a PID'
-                }
-                tr {
-                    td '/metadata'
-                    td 'Obtain metadata about a LAPPS service.'
-                }
-                tr {
-                    td valign:'top', '/producers'
-                    td 'Find all LAPPS service that produce a given annotation type. [experimental]'
-
-                }
-                tr {
-                    td valign:'top', '/soap-proxy'
-                    td 'A REST-like proxy for LAPPS Grid SOAP services.'
                 }
             }
             mkp.yieldUnescaped '''<p>See the README in the <a href='https://github.com/lappsgrid-incubator/groovlets'>GitHub repository</a> for more information.</p>'''
